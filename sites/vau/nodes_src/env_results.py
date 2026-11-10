@@ -7,7 +7,8 @@ node = make(NODES)
 
 ENV = ("The Lean environments are unsorted lists with first-binding lookup. Shutt's are sorted with no "
        "symbol bound twice. Lookup agrees with Shutt's lookup on the normalized environment, but Lean environments may hold "
-       "shadowed duplicate bindings, which Shutt's grammar forbids, and equality of environment terms is weaker (see VauE.Env).")
+       "shadowed duplicate bindings, which Shutt's grammar forbids, and equality of environment terms is weaker (see VauE.Env). "
+       "`VauE.env_opacity` shows that no program can observe the order or the shadowed bindings.")
 OURS = ("`$eval` and `$list*` have delta-rules written by this project. Shutt uses them in thesis "
         "(4.20)-(4.22) and calls their rules self-evident; he gives rules (9.12) only for `$vau`, `$wrap` "
         "and `$unwrap`.")

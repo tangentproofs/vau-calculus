@@ -17,14 +17,14 @@
  "title": "Vau calculus, explained",
  "brand": "vau calculus <em>explained</em>",
  "h1": "Vau calculus: fexprs with a real equational theory, because evaluation is explicit",
- "lead": "In Lisp, a <b>fexpr</b> is a first-class combiner that receives its operands <em>unevaluated</em>. Mitchell Wand showed in 1998 that in his calculus, where evaluation is <em>implicit</em> (every reduction is evaluation) and fexprs are fully reflective, contextual equivalence is trivial. John N. Shutt's <b>vau calculi</b> avoid this by making evaluation <em>explicit</em>: a term <code>[eval T]</code> asks for evaluation, and the operand <code>T</code> alone is just data. This site explains the pure <b>vau-x calculus</b> (Shutt's thesis, section 9.3) and a <b>Lean 4 formalization</b> of it in this repository, with no <code>sorry</code>. Four headlines are proved in Lean for the concrete vau-x rules: evaluation is a special case of reduction, vau-x conservatively extends the call-by-value lambda calculus, the rules are confluent, and contextual equivalence is nontrivial. A fifth is proved in a Lean model of Shutt's environment calculus <b>vau-e</b>: <code>$lambda</code>, defined from <code>$vau</code>, <code>wrap</code> and <code>eval</code>, binds its parameters to the evaluated arguments and runs its body in the environment where the <code>$lambda</code> expression was evaluated (static scope); and the vau-e rules are confluent. The Lean does <b>not</b> formalize Shutt's general framework of regular substitutive reduction systems.",
- "desc": "Unofficial, AI-drafted explainer of John N. Shutt's vau calculus with a Lean 4 formalization (no sorry, no Mathlib): pure vau-x with confluence, evaluation as reduction, conservative extension of call-by-value lambda and nontrivial contextual equivalence; and vau-e with environments, $vau, wrap/unwrap, derived $lambda and confluence.",
+ "lead": "In Lisp, a <b>fexpr</b> is a first-class combiner that receives its operands <em>unevaluated</em>. Mitchell Wand showed in 1998 that in his calculus, where evaluation is <em>implicit</em> (every reduction is evaluation) and fexprs are fully reflective, contextual equivalence is trivial. John N. Shutt's <b>vau calculi</b> avoid this by making evaluation <em>explicit</em>: a term <code>[eval T]</code> asks for evaluation, and the operand <code>T</code> alone is just data. This site explains the pure <b>vau-x calculus</b> (Shutt's thesis, section 9.3) and a <b>Lean 4 formalization</b> of it in this repository, with no <code>sorry</code>. Four headlines are proved in Lean for the concrete vau-x rules: evaluation is a special case of reduction, vau-x conservatively extends the call-by-value lambda calculus, the rules are confluent, and contextual equivalence is nontrivial. A fifth is proved in a Lean model of Shutt's environment calculus <b>vau-e</b>: <code>$lambda</code>, defined from <code>$vau</code>, <code>wrap</code> and <code>eval</code>, binds its parameters to the evaluated arguments and runs its body in the environment where the <code>$lambda</code> expression was evaluated (static scope); the vau-e rules are confluent; and environments are opaque: no program can tell apart two environments with the same lookups. The Lean does <b>not</b> formalize Shutt's general framework of regular substitutive reduction systems.",
+ "desc": "Unofficial, AI-drafted explainer of John N. Shutt's vau calculus with a Lean 4 formalization (no sorry, no Mathlib): pure vau-x with confluence, evaluation as reduction, conservative extension of call-by-value lambda and nontrivial contextual equivalence; and vau-e with environments, $vau, wrap/unwrap, derived $lambda, confluence, environment opacity and #ignore hygiene.",
  "startTitle": "Start here: the headline statements",
  "startLink": "Start here: the headline statements",
- "startIntro": "The headline statements, then every definition you need to read them, simplest first. All six headlines are <b>proved in Lean</b> (no <code>sorry</code>). Four are about pure vau-x; <code>VauE.derived_lambda</code> and <code>VauE.confluence</code> are about the environment calculus vau-e.",
+ "startIntro": "The headline statements, then every definition you need to read them, simplest first. All seven headlines are <b>proved in Lean</b> (no <code>sorry</code>). Four are about pure vau-x; <code>VauE.derived_lambda</code>, <code>VauE.confluence</code> and <code>VauE.env_opacity</code> are about the environment calculus vau-e.",
  "startNote": "<p>All definitions follow Shutt's PhD thesis (WPI, 2010), chapter 9: the pure <b>vau-x calculus</b> of section 9.3, and, only to make <code>$vau</code> understandable, the environment calculus <b>vau-e</b> of section 9.1. The Lean (folder <code>Vau/</code>) uses de Bruijn indices for variables and has no delta-rules. In the text, notation is ASCII: <code>[eval T]</code>, <code>[combine T1 T2]</code>, <code>&lt;T&gt;</code> for an applicative, and <code>&lt;vau x.T&gt;</code>, <code>&lt;vau0.T&gt;</code>, <code>&lt;vau2.T&gt;</code> for the three compound operatives. The rule names (eval-self and so on) are this project's names for Shutt's schemata (9.25S), (9.25p), (9.25a), (9.25gamma), (9.25beta), (9.25vau0) and (9.25vau2).</p>",
- "sizeNote": "Lean 4 in Vau/ (11 files, no sorry, no axiom declarations): vau-x (Vau.*) and vau-e (VauE.*). 6 headlines proved. Nodes without Lean are marked PLAN.",
- "agentCtx": "an unofficial explainer of John N. Shutt's vau calculus with a Lean 4 formalization in the same repository (folder Vau/, no Mathlib, no sorry): pure vau-x (thesis 9.3, four proved headlines, no delta-rules) and vau-e (thesis 9.1, environments, $vau, wrap/unwrap, derived $lambda and confluence proved; unsorted environments; $eval and $list* rules are the project's); hygiene, encapsulation types and actors are still planned",
+ "sizeNote": "Lean 4 in Vau/ (12 files, no sorry, no axiom declarations): vau-x (Vau.*) and vau-e (VauE.*). 7 headlines proved. Nodes without Lean are marked PLAN.",
+ "agentCtx": "an unofficial explainer of John N. Shutt's vau calculus with a Lean 4 formalization in the same repository (folder Vau/, no Mathlib, no sorry): pure vau-x (thesis 9.3, four proved headlines, no delta-rules) and vau-e (thesis 9.1, environments, $vau, wrap/unwrap, derived $lambda, confluence, environment opacity and #ignore hygiene proved; unsorted environments; $eval and $list* rules are the project's); encapsulation types and actors are still planned",
  "roots": [
   "Vau"
  ],
@@ -35,7 +35,8 @@
   "confluence",
   "nontrivial",
   "VauE.derived_lambda",
-  "VauE.confluence"
+  "VauE.confluence",
+  "VauE.env_opacity"
  ],
  "mathlibNamespaces": [],
  "mathlibNames": [],
@@ -56,17 +57,9 @@
    ],
    "url": "https://web.cs.wpi.edu/~jshutt/jns-nepls07.txt"
   },
-  "EnvironmentOpacity": {
-   "deps": [
-    "VauE.Env",
-    "VauE.vau_call"
-   ],
-   "formal": "planned",
-   "url": "https://web.cs.wpi.edu/~jshutt/dissertation/etd-090110-124904-Shutt-Dissertation.pdf#page=101"
-  },
   "EncapsulationTypes": {
    "deps": [
-    "EnvironmentOpacity"
+    "VauE.env_opacity"
    ],
    "formal": "planned",
    "url": "https://web.cs.wpi.edu/~jshutt/dissertation/etd-090110-124904-Shutt-Dissertation.pdf#page=146"

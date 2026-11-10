@@ -21,8 +21,9 @@ the basis of the Kernel programming language.
   rule [VauE.vau_call](#/node/VauE.vau_call), [VauE.unwrap_wrap](#/node/VauE.unwrap_wrap), and the
   headlines [VauE.derived_lambda](#/node/VauE.derived_lambda) and
   [VauE.confluence](#/node/VauE.confluence).
-- Still **PLAN** (no Lean): [EnvironmentOpacity](#/node/EnvironmentOpacity),
-  [EncapsulationTypes](#/node/EncapsulationTypes) and the [ActorLayer](#/node/ActorLayer).
+- Environment opacity and hygiene in vau-e: [VauE.env_opacity](#/node/VauE.env_opacity) (a headline)
+  and [VauE.ignore_hygiene](#/node/VauE.ignore_hygiene).
+- Still **PLAN** (no Lean): [EncapsulationTypes](#/node/EncapsulationTypes) and the [ActorLayer](#/node/ActorLayer).
 
 ## What the Lean does not do
 

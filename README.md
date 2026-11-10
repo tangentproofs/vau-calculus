@@ -75,6 +75,7 @@ thesis.
 
 | theorem | file | statement, in words |
 |---|---|---|
+| `VauE.env_opacity` | `Vau/Env/Opacity.lean` | two environments with the same lookups cannot be told apart by any program (observing reduction to primitive data); so binding order and shadowed bindings are invisible |
 | `VauE.confluence` | `Vau/Env/Confluence.lean` | if `t ->* s1` and `t ->* s2` in vau-e, then `s1` and `s2` have a common reduct |
 | `VauE.derived_lambda` | `Vau/Env/Lambda.lean` | with Shutt's definition (4.10) of `$lambda` from `$vau`, `wrap`, `eval` and `list*`, `(($lambda p b) . args)` evaluated in `e` reduces to `b` evaluated in `e` extended with `p` bound to the evaluated arguments |
 
@@ -88,8 +89,12 @@ Confluence of vau-e is proved (`VauE.confluence`, `Vau/Env/Confluence.lean`)
 for these rules, by the same parallel-reduction method as vau-x; also
 `VauE.normal_unique` (a term has at most one normal form).
 
-Still planned (no Lean): environment opacity and hygiene, encapsulation
-types, and the actor layer.
+Also proved in `Vau/Env/Opacity.lean`: `ignore_hygiene` (an operative with
+environment parameter `#ignore` gives the same result from any caller's
+environment) and `match_env_opaque` (a parameter tree cannot take an
+environment apart).
+
+Still planned (no Lean): encapsulation types, and the actor layer.
 
 ## Sorry and axiom count
 
@@ -116,6 +121,12 @@ types, and the actor layer.
 'VauE.confluence' depends on axioms: [propext, Quot.sound]
 'VauE.church_rosser' depends on axioms: [propext, Quot.sound]
 'VauE.normal_unique' depends on axioms: [propext, Quot.sound]
+'VauE.env_opacity' depends on axioms: [propext, Quot.sound]
+'VauE.shadow_invisible' depends on axioms: [propext, Quot.sound]
+'VauE.order_invisible' depends on axioms: [propext, Quot.sound]
+'VauE.match_env_opaque' depends on axioms: [propext]
+'VauE.ignore_hygiene' depends on axioms: [propext, Quot.sound]
+'VauE.lookup_observable' depends on axioms: [propext, Quot.sound]
 ```
 
 No partial results: no theorem uses `sorry`.

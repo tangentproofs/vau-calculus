@@ -21,3 +21,9 @@ import Vau
 #print axioms VauE.confluence
 #print axioms VauE.church_rosser
 #print axioms VauE.normal_unique
+#print axioms VauE.env_opacity
+#print axioms VauE.shadow_invisible
+#print axioms VauE.order_invisible
+#print axioms VauE.match_env_opaque
+#print axioms VauE.ignore_hygiene
+#print axioms VauE.lookup_observable

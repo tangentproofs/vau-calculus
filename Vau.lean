@@ -9,3 +9,4 @@ import Vau.Env.Syntax
 import Vau.Env.Reduction
 import Vau.Env.Lambda
 import Vau.Env.Confluence
+import Vau.Env.Opacity

@@ -36,6 +36,12 @@ the fixes below. No person has reviewed this audit.
 'VauE.confluence' depends on axioms: [propext, Quot.sound]
 'VauE.church_rosser' depends on axioms: [propext, Quot.sound]
 'VauE.normal_unique' depends on axioms: [propext, Quot.sound]
+'VauE.env_opacity' depends on axioms: [propext, Quot.sound]
+'VauE.shadow_invisible' depends on axioms: [propext, Quot.sound]
+'VauE.order_invisible' depends on axioms: [propext, Quot.sound]
+'VauE.match_env_opaque' depends on axioms: [propext]
+'VauE.ignore_hygiene' depends on axioms: [propext, Quot.sound]
+'VauE.lookup_observable' depends on axioms: [propext, Quot.sound]
 ```
 
 ## Headlines: claim against Lean statement
@@ -139,3 +145,17 @@ the proof; this addendum covers the claims in the text.
 
 Text that said "confluence of vau-e is not proved" (banner, Start, About, Trust, README, the
 `vau_call`, `derived_lambda`, `unwrap_wrap` and `VauE.Step` nodes) was updated.
+
+## Addendum, Step 6 (environment opacity and hygiene)
+
+Self-check by the drafting session; no separate agent audited this step.
+
+| node | Lean statement | verdict |
+|---|---|---|
+| `VauE.env_opacity` | same lookups -> same observations (reduction to `dat n`) in every one-hole context | honest; the observation (primitive data) and the setting (pure vau-e, no mutation) are stated on the node. `lookup_observable` shows that different lookups can be observed, so the result is not vacuous. |
+| `VauE.shadow_invisible`, `VauE.order_invisible` | instances of `env_opacity` | honest. They address the earlier caveat on unsorted environments for observations; term equality is still weaker, and the node says so. |
+| `VauE.match_env_opaque` | a matching parameter tree for an environment is `#ignore` or a symbol | honest. |
+| `VauE.ignore_hygiene` | calls from any two dynamic environments reach the same term | honest; the caveat notes that operands are values here, and that applicative arguments are evaluated in the caller's environment. |
+
+Not claimed: Kernel's other hygiene tactics (stable bindings, local-only mutation), mutation,
+continuations, or a stronger observation than reduction to data.

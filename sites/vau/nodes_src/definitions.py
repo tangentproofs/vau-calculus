@@ -89,7 +89,7 @@ Shutt's vau-e calculus ([environments](#/node/VauE.Env), [`$vau`](#/node/VauE.va
 `eval`, evaluates its body with the parameters bound to the evaluated arguments, and
 `lambda_static_scope` shows that the body runs in the environment of the `$lambda` expression, not the
 caller's. Still **PLAN**:
-[EnvironmentOpacity](#/node/EnvironmentOpacity), [EncapsulationTypes](#/node/EncapsulationTypes) and
+[EncapsulationTypes](#/node/EncapsulationTypes) and
 the [ActorLayer](#/node/ActorLayer).
 
 The Lean does **not** formalize Shutt's general framework of regular substitutive reduction systems

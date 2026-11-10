@@ -17,49 +17,6 @@ def L(s):
             .replace("%D2", DALE_EXT).replace("%D3", DALE_ACTORS))
 
 
-# ---------------------------------------------------------------- 16. Environment opacity / hygiene
-node("EnvironmentOpacity",
-     "Planned: environments are opaque, and that supports hygiene",
-     "A Kernel program cannot list or take apart an environment. It can only look up symbols in it, or "
-     "change it if it holds a direct reference. Shutt's hygiene argument rests on this.",
-     L("""
-## Plain English
-
-**Hygiene** means that a variable binding affects only the part of the source code where the binding is
-written. Macros and fexprs both threaten hygiene: they can capture or expose names by accident. Shutt
-spends [thesis chapter 5](%T#page=101) on how Kernel keeps fexprs well-behaved.
-
-Two of his tactics matter here:
-
-- **Environments are encapsulated.** A program cannot ask an environment for a list of its bindings, and
-  cannot take an environment apart. A fexpr that receives its caller's environment as `e` can evaluate
-  things in `e` and look up symbols, but cannot find out what else `e` holds. In vau calculus terms, an
-  environment is not something a fexpr can deconstruct ([Start](#/node/Start)).
-- **Mutation is local.** A combiner can change only environments it holds a direct reference to, and
-  Kernel's `$define!` changes only the local environment. A callee that does not receive its caller's
-  environment cannot change it.
-
-## What is planned
-
-- An informal node for now. A planned Lean statement would be in the Lean model of vau-e (namespace
-  `VauE`), for example: a
-  combiner whose environment parameter is `#ignore` gives the same result in every calling environment.
-- This node may stay planned in this project.
-"""),
-     [q("What is hygiene, in Shutt's sense?",
-        ["Garbage collection of unused environments", "A variable binding affects only the part of the source code where it is written", "Type safety", "Evaluating every operand exactly once"],
-        1, "Hygiene is about keeping bindings local to the region of code where they are written."),
-      q("What does 'environments are encapsulated' mean in Kernel?",
-        ["They are immutable", "A program cannot list or take apart an environment's bindings", "They are garbage-collected", "They cannot be passed to fexprs"],
-        1, "A program can look up symbols in an environment but cannot inspect its whole contents."),
-      q("Is the planned Lean statement proved?",
-        ["Yes", "No: it is a PLAN", "Only for vau-x", "Only for $lambda"],
-        1, PLAN_NOTE)],
-     caveats=[
-         PLAN_NOTE,
-         "The summary of chapter 5 is ours and short. See the thesis for Shutt's full treatment of hygiene, including stable bindings.",
-     ])
-
 # ---------------------------------------------------------------- 17. Encapsulation types (later)
 node("EncapsulationTypes",
      "Later: encapsulation types",
@@ -79,7 +36,7 @@ The content can be read **only** through `d`. So if a module keeps `d` private a
 operations, nobody else can read or forge the content. The thesis uses this idiom often, inside a
 `$provide!` block.
 
-This is the same principle as [EnvironmentOpacity](#/node/EnvironmentOpacity): the language keeps some
+This is the same principle as [environment opacity](#/node/VauE.env_opacity): the language keeps some
 objects opaque, and that gives programmers abstraction barriers that fexprs cannot break.
 
 ## What is planned
