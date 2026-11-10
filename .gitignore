@@ -1,0 +1,10 @@
+.lake/
+build/
+_site/
+node_modules/
+*.olean
+*.ilean
+.env
+.env.*
+*.pem
+.DS_Store
