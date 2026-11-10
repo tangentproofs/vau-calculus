@@ -71,10 +71,11 @@ thesis.
   `Vau/Env/` (namespace `VauE`): symbols, environments, compound
   operatives, the rules (9.7) and the delta-rules (9.12) for `$vau`,
   `$wrap`, `$unwrap`, plus this project's rules for `$eval` and `$list*`.
-  Fifth headline:
+  Headlines:
 
 | theorem | file | statement, in words |
 |---|---|---|
+| `VauE.confluence` | `Vau/Env/Confluence.lean` | if `t ->* s1` and `t ->* s2` in vau-e, then `s1` and `s2` have a common reduct |
 | `VauE.derived_lambda` | `Vau/Env/Lambda.lean` | with Shutt's definition (4.10) of `$lambda` from `$vau`, `wrap`, `eval` and `list*`, `(($lambda p b) . args)` evaluated in `e` reduces to `b` evaluated in `e` extended with `p` bound to the evaluated arguments |
 
 Also proved there: `lambda_def` (thesis (4.18)), `lambda_expr` ((4.20)-(4.22)),
@@ -83,7 +84,9 @@ Also proved there: `lambda_def` (thesis (4.18)), `lambda_expr` ((4.20)-(4.22)),
 ((4.9)), `vau_call` (static and dynamic environment), `unwrap_wrap`, and the
 concrete check `lambda_id_seven`. vau-e environments are unsorted lists with
 first-binding lookup, so lookups agree with Shutt but term equality is weaker.
-Confluence of vau-e is not proved.
+Confluence of vau-e is proved (`VauE.confluence`, `Vau/Env/Confluence.lean`)
+for these rules, by the same parallel-reduction method as vau-x; also
+`VauE.normal_unique` (a term has at most one normal form).
 
 Still planned (no Lean): environment opacity and hygiene, encapsulation
 types, and the actor layer.
@@ -110,6 +113,9 @@ types, and the actor layer.
 'VauE.unwrap_wrap' depends on axioms: [propext]
 'VauE.lambda_id_seven' depends on axioms: [propext, Quot.sound]
 'VauE.lambda_static_scope' depends on axioms: [propext, Quot.sound]
+'VauE.confluence' depends on axioms: [propext, Quot.sound]
+'VauE.church_rosser' depends on axioms: [propext, Quot.sound]
+'VauE.normal_unique' depends on axioms: [propext, Quot.sound]
 ```
 
 No partial results: no theorem uses `sorry`.

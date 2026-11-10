@@ -19,14 +19,15 @@ the basis of the Kernel programming language.
 - A Lean model of Shutt's **vau-e** calculus (folder `Vau/Env/`, namespace `VauE`), with symbols and
   environments: [VauE.Env](#/node/VauE.Env), the rules [VauE.Top](#/node/VauE.Top), the `$vau` call
   rule [VauE.vau_call](#/node/VauE.vau_call), [VauE.unwrap_wrap](#/node/VauE.unwrap_wrap), and the
-  fifth headline [VauE.derived_lambda](#/node/VauE.derived_lambda).
+  headlines [VauE.derived_lambda](#/node/VauE.derived_lambda) and
+  [VauE.confluence](#/node/VauE.confluence).
 - Still **PLAN** (no Lean): [EnvironmentOpacity](#/node/EnvironmentOpacity),
   [EncapsulationTypes](#/node/EncapsulationTypes) and the [ActorLayer](#/node/ActorLayer).
 
 ## What the Lean does not do
 
 The Lean does **not** formalize Shutt's general framework of regular substitutive reduction systems
-(thesis chapter 13), and it does not prove confluence of vau-e. The vau-x results are about the concrete
+(thesis chapter 13). Confluence is proved directly for both vau-x and vau-e. The vau-x results are about the concrete
 vau-x rules with no delta-rules. The vau-e results use unsorted environments and two delta-rules
 (`$eval`, `$list*`) written by this project. Some definitions are this project's own choice (the evaluator, the notion of
 observation); their nodes say so. The [Trust](#/trust) page lists the `sorry` and axiom counts and the

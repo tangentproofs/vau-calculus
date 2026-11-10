@@ -33,6 +33,9 @@ the fixes below. No person has reviewed this audit.
 'VauE.unwrap_wrap' depends on axioms: [propext]
 'VauE.lambda_id_seven' depends on axioms: [propext, Quot.sound]
 'VauE.lambda_static_scope' depends on axioms: [propext, Quot.sound]
+'VauE.confluence' depends on axioms: [propext, Quot.sound]
+'VauE.church_rosser' depends on axioms: [propext, Quot.sound]
+'VauE.normal_unique' depends on axioms: [propext, Quot.sound]
 ```
 
 ## Headlines: claim against Lean statement
@@ -121,4 +124,18 @@ non-ASCII text. Summary table:
 Disclosed differences from the thesis: unsorted environments (lookup agrees,
 term equality weaker); delta-rules for `$eval` and `$list*` are this project's;
 (9.7a) read with its environment operand; symbols are numbers; no `$define!`,
-so `$lambda` is bound by hypothesis. Not claimed: confluence of vau-e.
+so `$lambda` is bound by hypothesis. (At the time of this addendum, confluence of vau-e
+was not claimed; see the Step 5 addendum.)
+
+## Addendum, Step 5 (confluence of vau-e)
+
+Self-check by the drafting session; no separate agent audited this step. The Lean is the check of
+the proof; this addendum covers the claims in the text.
+
+| node | Lean statement | verdict |
+|---|---|---|
+| `VauE.confluence` | `Steps t s1 -> Steps t s2 -> exists u, Steps s1 u /\ Steps s2 u` | honest for this formalization's vau-e rules: (9.7), (9.12) for `$vau`/`$wrap`/`$unwrap`, and the project's `$eval`/`$list*` rules, with unsorted environments and steps inside every binding. Not Shutt's SRS framework; not other delta-rules. |
+| `VauE.normal_unique` | two normal forms of one term are equal | follows from confluence; does not claim that a normal form exists. |
+
+Text that said "confluence of vau-e is not proved" (banner, Start, About, Trust, README, the
+`vau_call`, `derived_lambda`, `unwrap_wrap` and `VauE.Step` nodes) was updated.

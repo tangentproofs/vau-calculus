@@ -107,7 +107,7 @@ the `$lambda` expression was evaluated, extended by the parameters.
          OURS,
          ENV,
          "`#print axioms VauE.derived_lambda` reports `propext` and `Quot.sound`.",
-         "This is not a proof that vau-e is confluent; that is not formalized here.",
+         "The theorem gives one reduction sequence. `VauE.confluence` (proved separately) says that any other reduction of the same term can be joined with it again.",
      ])
 
 # ---------------------------------------------------------------- unwrap_wrap
@@ -143,8 +143,9 @@ theorem unwrap_wrap {c v : Term} {e : Env} (hw : Env.lookup sWrap e = some wrapA
 ```
 
 If `wrap` and `unwrap` have their standard bindings in `e`, and `c` reduces to a value `v`, then
-`(unwrap (wrap c))` reduces to `v`. (Confluence of vau-e is not proved, so this does not say that `v`
-is the only possible result.)
+`(unwrap (wrap c))` reduces to `v`. A value need not be a normal form, so this does not say that `v`
+is the only possible result; [confluence](#/node/VauE.confluence) says that any two results can be
+joined again.
 """),
      [q("What does `(unwrap (wrap c))` evaluate to?",
         ["An error", "The value of `c`", "`(wrap c)`", "The operands of `c`"],
@@ -526,9 +527,9 @@ part of `oper`, `pair`, `app`, `eval` and `comb`. [Steps](#/node/VauE.Steps) is 
       q("Can a step happen inside the body of a compound operative?",
         ["No", "Yes: `oper3`", "Only after a call", "Only for `$vau`"],
         1, "As in vau-x."),
-      q("Is confluence of `VauE.Step` proved here?",
-        ["Yes", "No", "Only for `$lambda`", "Only for environments"],
-        1, "Only vau-x confluence is proved.")])
+      q("Is confluence of `VauE.Steps` proved?",
+        ["Yes: `VauE.confluence`", "No", "Only for `$lambda`", "Only for environments"],
+        0, "By the same parallel-reduction method as for vau-x.")])
 
 node("VauE.Steps",
      "Reduction in vau-e",
@@ -726,3 +727,59 @@ not bind `$vau`: the primitive is self-evaluating. Shutt points this out after (
       q("What does `body` hold when `$lambda` is called as `($lambda p b)`?",
         ["`b`", "`(b)`", "`p`", "`(p b)`"],
         1, "The parameter tree `(ptree . body)` binds the rest of the operands.")])
+
+# ---------------------------------------------------------------- confluence of vau-e (headline)
+node("VauE.confluence",
+     "Confluence of the vau-e rules",
+     "If `t ->* s1` and `t ->* s2` in vau-e, then `s1 ->* u` and `s2 ->* u` for some `u`. Proved directly for "
+     "this formalization's vau-e rules by parallel reduction, not through Shutt's general framework.",
+     L("""
+## Plain English
+
+A relation is **confluent** if two different reduction paths from one term can always be joined again
+(see [confluence](#/node/confluence) for vau-x). Shutt shows that vau-e, like vau-x, is Church-Rosser,
+through his theorem on regular substitutive reduction systems (thesis chapter 13 and section 14.1.4).
+
+## The Lean statement
+
+```
+theorem confluence {t s1 s2 : Term} (h1 : Steps t s1) (h2 : Steps t s2) :
+    exists u, Steps s1 u /\\ Steps s2 u
+```
+
+in namespace `VauE`, about [VauE.Steps](#/node/VauE.Steps): the rules of [VauE.Top](#/node/VauE.Top)
+(Shutt's (9.7), his delta-rules (9.12) for `$vau`, `$wrap`, `$unwrap`, and this project's delta-rules
+for `$eval` and `$list*`) in the compatible closure, including steps inside environment bindings.
+
+Also proved: `VauE.church_rosser` (terms equal in the theory have a common reduct) and
+`VauE.normal_unique` (a term reduces to at most one normal form).
+
+## How it is proved
+
+In `Vau/Env/Confluence.lean`, by parallel reduction and complete developments, as for vau-x. vau-e has
+no substitution, so there is no substitution lemma. The new work is to show that parallel steps keep
+what each rule looks at:
+
+- `Par.lookup_some`: reducing inside the bindings of an environment keeps every lookup defined, with a
+  reduced result;
+- `Par.pattern` and `Par.ematch_some`: a parameter tree that matches cannot change, and a match stays
+  defined when the operand tree and the dynamic environment are reduced;
+- `Par.isList`, `Par.isValue`, `Par.buildListStar_some`: proper lists, values and `list*` arguments
+  keep their shape.
+
+`Par.to_cd` (every parallel step from `t` can be completed to `cd t`) then gives the diamond property.
+"""),
+     [q("Which rules does `VauE.confluence` cover?",
+        ["All of Kernel", "This formalization's vau-e rules: (9.7), (9.12) and the project's `$eval` and `$list*` rules", "Only the general schemata (9.7)", "Only vau-x"],
+        1, "Other delta-rules would need their own check."),
+      q("What replaces the substitution lemma of the vau-x proof?",
+        ["Nothing is needed", "Lemmas that parallel steps keep lookups, matches, lists and values", "A typing lemma", "Shutt's Theorem 13.104"],
+        1, "vau-e has no substitution; its rules look up, match and take apart lists instead."),
+      q("What does `VauE.normal_unique` add?",
+        ["Every term has a normal form", "A term reduces to at most one normal form", "Reduction is deterministic", "Environments are sorted"],
+        1, "It follows from confluence; it does not say that a normal form exists.")],
+     caveats=[
+         "This does not formalize Shutt's regular SRS framework; it checks the conclusion for this formalization's rules by a direct proof.",
+         "Environments are unsorted lists here, so this is confluence of a calculus whose equational theory is weaker than Shutt's vau-e (see VauE.Env). Steps inside shadowed bindings are included.",
+         "`#print axioms VauE.confluence` reports `propext` and `Quot.sound`.",
+     ])

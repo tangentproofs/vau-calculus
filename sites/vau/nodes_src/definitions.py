@@ -93,7 +93,7 @@ caller's. Still **PLAN**:
 the [ActorLayer](#/node/ActorLayer).
 
 The Lean does **not** formalize Shutt's general framework of regular substitutive reduction systems
-(thesis chapter 13), and it does not prove confluence of vau-e. Each vau-x result is about the concrete
+(thesis chapter 13). [Confluence of vau-e](#/node/VauE.confluence) is proved directly too. Each vau-x result is about the concrete
 vau-x rules with no delta-rules.
 """),
      [q("In the lambda calculus with implicit evaluation, why does adding a fexpr that inspects its operand make the theory trivial?",
@@ -607,7 +607,7 @@ looked up in `e1`. The rules themselves are in `VauE.Top` (`beta` and `deltaVau`
         ["Yes, a delta-rule", "No: `$vau` needs symbols, which vau-x does not have", "Yes, beta-vau", "Only for `#ignore`"],
         1, "Shutt says no natural vau-x schema can be built for `$vau`.")],
      caveats=[
-         "The Lean models Shutt's pure vau-e calculus in namespace `VauE`, with unsorted environments (see VauE.Env). It proves this one-step call rule; it does not prove confluence of vau-e.",
+         "The Lean models Shutt's pure vau-e calculus in namespace `VauE`, with unsorted environments (see VauE.Env). It proves this one-step call rule, and separately confluence of vau-e (VauE.confluence).",
          "In vau-e the body of a compound operative is one expression; Kernel allows a sequence. Shutt explains that without side effects one expression is enough.",
          "Kernel creates a fresh child environment for each call, which matters once environments can be mutated. Pure vau-e uses the join `match(...) . e1` instead.",
      ])

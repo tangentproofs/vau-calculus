@@ -18,3 +18,6 @@ import Vau
 #print axioms VauE.unwrap_wrap
 #print axioms VauE.lambda_id_seven
 #print axioms VauE.lambda_static_scope
+#print axioms VauE.confluence
+#print axioms VauE.church_rosser
+#print axioms VauE.normal_unique

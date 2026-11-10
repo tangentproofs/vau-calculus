@@ -13,6 +13,7 @@ claim it is named for. The claim-by-claim honesty audit is `VAU_AUDIT.md` in the
 | [conservative_extension](#/node/conservative_extension) | `LConv M N <-> Conv (embed M) (embed N)` | thesis 15.4, map (15.28), informal | vau-x form of the map; call-by-value lambda. Shutt describes the image as the full lambda calculus; for vau-x the Lean shows it is lambda-v (see the embed node) |
 | [confluence](#/node/confluence) | `Steps t s1 -> Steps t s2 -> exists u, Steps s1 u /\ Steps s2 u` | thesis 14.1.4 with Theorem 13.104 (Church-Rosser of vau-x) | direct proof; no delta-rules; no SRS framework |
 | [nontrivial](#/node/nontrivial) | `Not (eval (dat 5) = dat 5) /\ CtxEquiv (eval (dat 5)) (dat 5) /\ Not (CtxEquiv (dat 5) (dat 6))` | the point of thesis chapter 15 against Wand (1998) | the observation in `CtxEquiv` |
+| [VauE.confluence](#/node/VauE.confluence) | `Steps t s1 -> Steps t s2 -> exists u, Steps s1 u /\ Steps s2 u` (vau-e) | thesis 14.1.4 with Theorem 13.104 | direct proof; this formalization's rules (unsorted environments, `$eval`, `$list*`) |
 | [VauE.derived_lambda](#/node/VauE.derived_lambda) | `Ground e0 -> lookup $lambda e = lambdaOp e0 -> ... -> Steps (eval (($lambda p b) . args) e) (eval b (m . e))` | thesis (4.9), (4.10), traces (4.18)-(4.22) | vau-e with unsorted environments; delta-rules for `$eval`, `$list*`; one body expression |
 
 None of the headlines has a PARTIAL or CONDITIONAL label: none uses `sorry`, and none has a hypothesis
