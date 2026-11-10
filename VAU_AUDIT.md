@@ -48,6 +48,12 @@ the fixes below. No person has reviewed this audit.
 'VauE.decap_other_stuck' depends on axioms: [propext]
 'VauE.capsule_opacity' depends on axioms: [propext, Quot.sound]
 'VauE.capsule_observable_with_decap' depends on axioms: [propext, Quot.sound]
+'VauE.actor_sound' depends on axioms: [propext]
+'VauE.actor_eval_sound' depends on axioms: [propext]
+'VauE.actor_determinate' depends on axioms: [propext, Quot.sound]
+'VauE.actor_results_join' depends on axioms: [propext, Quot.sound]
+'VauE.fork_interleave' depends on axioms: [propext]
+'VauE.actor_example' depends on axioms: [propext]
 ```
 
 ## Headlines: claim against Lean statement
@@ -178,3 +184,16 @@ Self-check by the drafting session; no separate agent audited this step.
 Adding the `capsule` term and the three rules changed `VauE.Term`, `VauE.Top` and `VauE.Step`, so
 `VauE.confluence` and `VauE.env_opacity` were re-proved; their nodes now name the encapsulation rules.
 Not claimed: fresh type generation, Kernel's `$provide!`, or any statement about state.
+
+## Addendum, Step 8 (actor layer)
+
+Self-check by the drafting session; no separate agent audited this step.
+
+| node | Lean statement | verdict |
+|---|---|---|
+| `VauE.actor_determinate` | two runs from one configuration that reply `dat n1` and `dat n2` have `n1 = n2` | honest for the tree model. The model is this project's abstraction of Schumacher's design; the node lists what it leaves out (addresses, mailboxes, order, fairness, step-by-step `#lookup`). Not a statement about Humus code. |
+| `VauE.actor_sound` | every run is a vau-e reduction of the read-back terms | honest; completeness (every vau-e result has an actor run) is not claimed. |
+| `VauE.fork_interleave`, `VauE.actor_example` | both orders of two fork deliveries; a full run of `(f 5 6)` | show that the concurrency is real and the hypotheses can be met. |
+
+Earlier text said "we know of no published confluence proof for such an actor layer". That remains
+true of published work; this repository now has a proof for its own model, and the node says so.

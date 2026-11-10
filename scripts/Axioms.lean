@@ -33,3 +33,9 @@ import Vau
 #print axioms VauE.decap_other_stuck
 #print axioms VauE.capsule_opacity
 #print axioms VauE.capsule_observable_with_decap
+#print axioms VauE.actor_sound
+#print axioms VauE.actor_eval_sound
+#print axioms VauE.actor_determinate
+#print axioms VauE.actor_results_join
+#print axioms VauE.fork_interleave
+#print axioms VauE.actor_example

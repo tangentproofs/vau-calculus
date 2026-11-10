@@ -26,7 +26,10 @@ the basis of the Kernel programming language.
 - Encapsulation types (this project's rules for Kernel's `make-encapsulation-type`):
   [VauE.capsule_opacity](#/node/VauE.capsule_opacity) (a headline) and
   [VauE.decap_encap](#/node/VauE.decap_encap).
-- Still **PLAN** (no Lean): the [ActorLayer](#/node/ActorLayer).
+- An actor-style evaluator after Dale Schumacher, with concurrent operand evaluation:
+  [VauE.actor_determinate](#/node/VauE.actor_determinate) (a headline) and
+  [VauE.actor_sound](#/node/VauE.actor_sound). It is a Lean model of his design, not his code.
+- No node is a PLAN any more.
 
 ## What the Lean does not do
 

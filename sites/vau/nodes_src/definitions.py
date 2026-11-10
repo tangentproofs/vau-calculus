@@ -89,8 +89,9 @@ Shutt's vau-e calculus ([environments](#/node/VauE.Env), [`$vau`](#/node/VauE.va
 `eval`, evaluates its body with the parameters bound to the evaluated arguments, and
 `lambda_static_scope` shows that the body runs in the environment of the `$lambda` expression, not the
 caller's. With encapsulation types added to vau-e, [capsule_opacity](#/node/VauE.capsule_opacity) proves that
-a program without the decapsulator cannot see the content of an encapsulated object. Still **PLAN**:
-the [ActorLayer](#/node/ActorLayer).
+a program without the decapsulator cannot see the content of an encapsulated object. Last, a Lean
+model of Dale Schumacher's actor evaluator, with concurrent operand evaluation, gives one answer in
+every interleaving: [actor_determinate](#/node/VauE.actor_determinate).
 
 The Lean does **not** formalize Shutt's general framework of regular substitutive reduction systems
 (thesis chapter 13). [Confluence of vau-e](#/node/VauE.confluence) is proved directly too. Each vau-x result is about the concrete

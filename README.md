@@ -42,8 +42,9 @@ There are no delta-rules.
 **This work does not formalize Shutt's full Regular Substitutive Reduction
 Systems framework** (thesis chapter 13). Confluence is proved directly for the
 concrete vau-x rules. Environments, `$vau` and the derived `$lambda` are formalized in a separate
-model of vau-e (see Status). Encapsulation types, hygiene and an actor layer
-are not formalized; their nodes on the site are marked PLAN.
+model of vau-e (see Status), as are environment opacity and hygiene.
+Encapsulation types and an actor-style evaluator are this project's
+additions to vau-e, modeled on Kernel and on Schumacher's design (see Status).
 
 A web search on 2026-11-09 found no prior Lean, Coq, Isabelle, or Agda
 formalization of vau calculus. We do not claim that none exists.
@@ -75,6 +76,7 @@ thesis.
 
 | theorem | file | statement, in words |
 |---|---|---|
+| `VauE.actor_determinate` | `Vau/Env/Actors.lean` | in a model of Schumacher's actor evaluator with concurrent operand evaluation, any two runs that reply primitive data reply the same data |
 | `VauE.capsule_opacity` | `Vau/Env/Encapsulation.lean` | a program without the decapsulator of an encapsulation type cannot observe the content of an object of that type |
 | `VauE.env_opacity` | `Vau/Env/Opacity.lean` | two environments with the same lookups cannot be told apart by any program (observing reduction to primitive data); so binding order and shadowed bindings are invisible |
 | `VauE.confluence` | `Vau/Env/Confluence.lean` | if `t ->* s1` and `t ->* s2` in vau-e, then `s1` and `s2` have a common reduct |
@@ -103,7 +105,14 @@ Fresh types are not modeled: types are numbered. Also proved: `decap_encap`,
 `isEncap_same`, `isEncap_other`, `decap_other_stuck`. Confluence and
 environment opacity were re-proved for the extended calculus.
 
-Still planned (no Lean): the actor layer.
+An actor-style evaluator after Dale Schumacher (`Vau/Env/Actors.lean`):
+a tree-shaped Lean model of his design, with concurrent operand
+evaluation. `actor_sound`: every actor run is a vau-e reduction.
+`actor_determinate`: any two interleavings that reply primitive data
+reply the same data. This is a model of the design, not of his Humus
+code, and termination and completeness are not proved.
+
+No node on the site is a PLAN any more.
 
 ## Sorry and axiom count
 
@@ -142,6 +151,12 @@ Still planned (no Lean): the actor layer.
 'VauE.decap_other_stuck' depends on axioms: [propext]
 'VauE.capsule_opacity' depends on axioms: [propext, Quot.sound]
 'VauE.capsule_observable_with_decap' depends on axioms: [propext, Quot.sound]
+'VauE.actor_sound' depends on axioms: [propext]
+'VauE.actor_eval_sound' depends on axioms: [propext]
+'VauE.actor_determinate' depends on axioms: [propext, Quot.sound]
+'VauE.actor_results_join' depends on axioms: [propext, Quot.sound]
+'VauE.fork_interleave' depends on axioms: [propext]
+'VauE.actor_example' depends on axioms: [propext]
 ```
 
 No partial results: no theorem uses `sorry`.
