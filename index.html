@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vau calculus, explained (unofficial)</title>
-<meta name="description" content="Unofficial, AI-drafted plain-English explainer of John N. Shutt&#39;s vau calculus, with a Lean 4 formalization planned in the same repository.">
+<meta name="description" content="Unofficial, AI-drafted plain-English explainer of John N. Shutt&#39;s vau calculus, with a Lean 4 formalization of the pure vau-x calculus in the same repository.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Vau calculus, explained (unofficial)">
-<meta property="og:description" content="Unofficial, AI-drafted plain-English explainer of John N. Shutt&#39;s vau calculus, with a Lean 4 formalization planned in the same repository.">
+<meta property="og:description" content="Unofficial, AI-drafted plain-English explainer of John N. Shutt&#39;s vau calculus, with a Lean 4 formalization of the pure vau-x calculus in the same repository.">
 <meta property="og:url" content="https://tangentproofs.github.io/vau-calculus/">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
@@ -19,17 +19,17 @@
 <main>
 <section class="hero">
   <h1>vau calculus <em>explained</em></h1>
-  <p class="tag">John N. Shutt's vau calculus, in <em>plain English</em>: why evaluation must be explicit, the pure vau-x syntax and its reduction rules, and a plan for a Lean&nbsp;4 formalization.</p>
+  <p class="tag">John N. Shutt's vau calculus, in <em>plain English</em>: why evaluation must be explicit, the pure vau-x syntax and its reduction rules, and a Lean&nbsp;4 formalization of vau-x: confluence, evaluation as reduction, conservative extension of call-by-value lambda, and nontrivial contextual equivalence.</p>
 </section>
-<div class="fan big-disclaimer"><p><b>Not official documentation.</b> This site is an independent, unofficial explainer. It is not written, reviewed, endorsed or maintained by John N. Shutt, by Dale Schumacher, by Mitchell Wand, or by any author of the cited sources. An AI model (Claude) drafted the explanations, and no person has reviewed them. They may contain mistakes. The cited thesis, talk and posts are the ground truth for the theory. When Lean exists in this repository, the Lean is the ground truth for what this project proves.</p><p>The code and text in this repository are under the MIT License. The cited works keep their own copyright; this site quotes only short, attributed phrases from them.</p></div>
+<div class="fan big-disclaimer"><p><b>Not official documentation.</b> This site is an independent, unofficial explainer. It is not written, reviewed, endorsed or maintained by John N. Shutt, by Dale Schumacher, by Mitchell Wand, or by any author of the cited sources. An AI model (Claude) drafted the explanations, and no person has reviewed them. They may contain mistakes. The cited thesis, talk and posts are the ground truth for the theory. The Lean in this repository is the ground truth for what this project proves; it covers the pure vau-x calculus only.</p><p>The code and text in this repository are under the MIT License. The cited works keep their own copyright; this site quotes only short, attributed phrases from them.</p></div>
 <section id="projects">
 <h2>Explainers <span class="muted small">1</span></h2>
 <div class="grid feature"><article class="card inf">
-  <a class="thumb ph c1" href="vau/" aria-label="Vau calculus (vau-x)"><span class="ph-name">Vau calculus (vau-x)</span><span class="ph-note">18 explained nodes</span></a>
+  <a class="thumb ph c1" href="vau/" aria-label="Vau calculus (vau-x)"><span class="ph-name">Vau calculus (vau-x)</span><span class="ph-note">44 explained nodes</span></a>
   <div class="body">
     <h3><a href="vau/">Vau calculus (vau-x)</a> <span class="pill">theory</span> <span class="pill own">own project</span></h3>
     <p class="who"><a href="https://web.cs.wpi.edu/~jshutt/">John N. Shutt (theory)</a></p>
-    <p>Unofficial, AI-drafted plain-English explainer of John N. Shutt&#39;s vau calculus, with a planned Lean 4 formalization laid out as a graph of 18 PLAN nodes: syntax, substitution, the vau-x reduction rules, compatible closure, evaluation as reduction, the lambda embedding, conservative extension, confluence, environments, wrap and unwrap, derived $lambda, and nontrivial contextual equivalence. No Lean exists yet.</p>
+    <p>Unofficial, AI-drafted explainer of John N. Shutt&#39;s vau calculus with a Lean 4 formalization of the pure vau-x calculus (no sorry, no Mathlib): syntax, de Bruijn substitution, the seven reduction rules, compatible closure, and four proved headlines: evaluation is reduction, conservative extension of call-by-value lambda, confluence, and nontrivial contextual equivalence. Derived $lambda and environments are planned.</p>
     <p class="meta">Upstream: <a href="https://web.cs.wpi.edu/~jshutt/dissertation/etd-090110-124904-Shutt-Dissertation.pdf">web.cs.wpi.edu</a> by John N. Shutt (theory); explanations drafted by Claude (AI) in this repository · licence MIT (this repository)</p>
     <div class="links multi"><a class="btn site" href="vau/"><b>Plain-English informalization</b> <span class="host">unofficial explainer</span> →</a><a class="btn gh" href="https://web.cs.wpi.edu/~jshutt/dissertation/etd-090110-124904-Shutt-Dissertation.pdf">web.cs.wpi.edu ↗</a></div>
   </div>

@@ -1,5 +1,5 @@
-# Step 1: what vau calculus is. Concept nodes (no Lean yet); every one is marked "formal": "planned"
-# in site.json. Notation is ASCII: [eval T], [combine T1 T2], <T> (applicative), <vau x.T>, <vau0.T>,
+# Step 1 nodes: what vau calculus is. Start, Environments and VauEnvironments are concept nodes. Term,
+# IsValue, inst and Top are Lean declarations in Vau/ (Step 3); their text explains the Lean. Notation is ASCII: [eval T], [combine T1 T2], <T> (applicative), <vau x.T>, <vau0.T>,
 # <vau2.T> (compound operatives), T[x <- V] (substitution). "%T" below expands to the thesis PDF URL,
 # "%N" to the NEPLS talk, "%D1" to Schumacher's "Fexpr the Ultimate Lambda".
 from _common import THESIS, NEPLS, DALE_FEXPR, make, q
@@ -15,7 +15,7 @@ def L(s):
 # ---------------------------------------------------------------- 1. Start
 node("Start",
      "Start: why vau calculus makes evaluation explicit",
-     "If every reduction step counts as evaluation, a calculus with fexprs has a trivial theory (Wand, 1998). "
+     "Wand (1998) showed that in his calculus, where evaluation is implicit and fexprs are fully reflective, contextual equivalence is trivial. "
      "Vau calculus keeps source code as passive data and asks for evaluation with an explicit `[eval T]` term, "
      "so evaluation becomes one kind of reduction among others.",
      L("""
@@ -58,34 +58,36 @@ still gives true equations, for example `[eval 5] = 5`.
 **vau-x calculus** ([thesis section 9.3](%T#page=203)). It has no symbols and no environments. Read, in
 order:
 
-1. [Syntax](#/node/Syntax): the terms.
-2. [Values](#/node/Values): which terms are finished data.
-3. [Substitution](#/node/Substitution): how a parameter gets its value.
-4. [ReductionSchemata](#/node/ReductionSchemata): the seven general rules eval-self, eval-pair,
+1. [Term](#/node/Term): the terms.
+2. [IsValue](#/node/IsValue): which terms are finished data.
+3. [inst](#/node/inst): how a parameter gets its value (substitution).
+4. [Top](#/node/Top): the seven general rules eval-self, eval-pair,
    eval-wrap, combine-wrap, beta-vau, parse-nil and parse-pair.
 
 Real Kernel code uses `$vau` with symbols and environments. To make `$vau` understandable, two more nodes
 explain environments informally, from Shutt's vau-e calculus:
 [Environments](#/node/Environments) and [VauEnvironments](#/node/VauEnvironments).
 
-## What is planned
+## What the Lean proves
 
-No Lean exists in this repository yet. The plan is a Lean 4 formalization of the pure vau-x rules:
-syntax, substitution, the reduction rules, their [compatible closure](#/node/CompatibleClosure), and
-then five planned headlines:
+This repository has a Lean 4 formalization of the pure vau-x rules (folder `Vau/`, no Mathlib, no
+`sorry`). On top of the [terms](#/node/Term), [substitution](#/node/inst), the
+[rules](#/node/Top) and their [compatible closure](#/node/Step), it proves four headlines:
 
-- [EvalIsReduction](#/node/EvalIsReduction): every evaluation is a reduction sequence;
-- [ConservativeExtension](#/node/ConservativeExtension): vau-x keeps the lambda calculus equations,
-  through the [lambda embedding](#/node/LambdaEmbedding);
-- [Confluence](#/node/Confluence) of the concrete vau-x rules;
-- [DerivedLambda](#/node/DerivedLambda): `$lambda` from `$vau` and [wrap](#/node/WrapUnwrap);
-- [NontrivialEquivalence](#/node/NontrivialEquivalence): contextual equivalence is not trivial.
+- [eval_is_reduction](#/node/eval_is_reduction): every run of an evaluator is a reduction sequence;
+- [conservative_extension](#/node/conservative_extension): through the
+  [lambda embedding](#/node/embed), vau-x keeps exactly the equations of the call-by-value lambda
+  calculus;
+- [confluence](#/node/confluence) of the concrete vau-x rules;
+- [nontrivial](#/node/nontrivial): contextual equivalence in vau-x is not trivial.
 
-Three more nodes are for later: [EnvironmentOpacity](#/node/EnvironmentOpacity),
-[EncapsulationTypes](#/node/EncapsulationTypes) and the [ActorLayer](#/node/ActorLayer).
+A fifth headline, [DerivedLambda](#/node/DerivedLambda) (`$lambda` from `$vau` and
+[wrap](#/node/WrapUnwrap)), needs environments and is still a **PLAN**. So are
+[EnvironmentOpacity](#/node/EnvironmentOpacity), [EncapsulationTypes](#/node/EncapsulationTypes) and the
+[ActorLayer](#/node/ActorLayer).
 
-The Lean will **not** formalize Shutt's general framework of regular substitutive reduction systems
-(thesis chapter 13). Until the Lean lands, every node on this site is marked **PLAN**.
+The Lean does **not** formalize Shutt's general framework of regular substitutive reduction systems
+(thesis chapter 13). Each result is about the concrete vau-x rules only, with no delta-rules.
 """),
      [q("In the lambda calculus with implicit evaluation, why does adding a fexpr that inspects its operand make the theory trivial?",
         ["Because fexprs cannot be typed",
@@ -105,20 +107,20 @@ The Lean will **not** formalize Shutt's general framework of regular substitutiv
          "It removes the need for reduction",
          "It makes all terms values"],
         1, "The talk says explicit evaluation \"makes term evaluation a special case of term reduction\". Evaluation steps are reduction steps of `[eval ...]` terms; not every reduction step is an evaluation."),
-      q("Does this site claim that any vau calculus theorem is proved in Lean?",
-        ["Yes, confluence is proved",
-         "No: no Lean exists yet, and every node is marked PLAN",
-         "Yes, the lambda embedding is proved",
-         "Only the syntax is proved"],
-        1, "Step 1 of this project explains the theory only. The Trust page and every node say that no Lean exists yet.")],
+      q("What does this repository's Lean prove about confluence?",
+        ["Shutt's general Church-Rosser theorem for regular SRSs",
+         "Confluence of the concrete vau-x rules (seven general schemata, no delta-rules), by a direct proof",
+         "Nothing: confluence is only planned",
+         "Confluence of the full Kernel language"],
+        1, "`Vau.confluence` is about the concrete vau-x rules. The Lean does not formalize Shutt's SRS framework.")],
      caveats=[
          "Wand's result is summarized in our own words, not quoted. His calculus and his notion of fexpr differ from Shutt's; Shutt discusses the difference in thesis chapter 15.",
          "The example `((lambda x. x) y)` versus `y` is our illustration of the argument, not taken from Wand's paper.",
-         "Shutt's thesis obtains Church-Rosser (confluence) for vau-x through a general theorem on regular substitutive reduction systems (sections 13.4 and 14.1.4). This site does not check that proof, and the planned Lean will prove confluence only for the concrete vau-x rules.",
+         "Shutt's thesis obtains Church-Rosser (confluence) for vau-x through a general theorem on regular substitutive reduction systems (sections 13.4 and 14.1.4). This site does not check that proof. The Lean here proves confluence only for the concrete vau-x rules, by a different route.",
      ])
 
 # ---------------------------------------------------------------- 2. Syntax
-node("Syntax",
+node("Term",
      "The syntax of pure vau-x calculus",
      "A vau-x term is a self-evaluating term, a variable `x`, a pair `(T1 . T2)`, an applicative `<T>`, "
      "or an active term `[eval T]` or `[combine T1 T2]`.",
@@ -159,6 +161,20 @@ The pieces:
 The lambda calculus has one form, `(T1 T2)`, that is both data and a call. vau-x splits it into three:
 the pair `(T1 . T2)` (data), `[eval ...]` (a request to evaluate), and `[combine ...]` (a call). This split
 is what lets fexprs and a useful equational theory live together. See [Start](#/node/Start).
+
+## In the Lean
+
+`Vau.Term` has one constructor per form: `var n`, `dat n` (primitive data `d`), `prim n` (primitive
+operative `o`), `ign` (`#ignore`), `nil` (`()`), `vau t`, `vau0 t`, `vau2 t`, `pair a b`, `wrap t`
+(the applicative `<t>`), `eval t` and `comb a b` (`[combine a b]`).
+
+Two choices are this project's:
+
+- **De Bruijn indices.** A variable is a number: `var 0` is the variable bound by the nearest enclosing
+  `vau`, `var 1` the next one out, and so on. So `<vau x.<vau y.x>>` is `vau (vau (var 1))`. Terms that
+  differ only in the names of bound variables are the same Lean term.
+- **Primitives are numbered, with no delta-rules.** `dat n` and `prim n` are indexed by natural
+  numbers. A primitive operative has no rule of its own in this formalization.
 """),
      [q("Which of these is an active term?",
         ["`(T1 . T2)`", "`[combine T1 T2]`", "`<vau x.T>`", "`#ignore`"],
@@ -177,12 +193,12 @@ is what lets fexprs and a useful equational theory live together. See [Start](#/
         1, "Lists are abbreviations for nested pairs, and pairs are passive. The rule eval-pair turns `[eval (T1 . T2)]` into a combination.")],
      caveats=[
          "The ASCII notation is this site's. Shutt uses the Greek letter vau and angle brackets.",
-         "Primitive data and primitive operatives are parameters of the calculus: Shutt does not fix them. The planned Lean may fix a small set or leave them abstract.",
-         "Terms are compared up to renaming of bound variables (alpha-equivalence), as Shutt states for vau-x.",
+         "Primitive data and primitive operatives are parameters of the calculus: Shutt does not fix them. The Lean indexes both by natural numbers and gives primitive operatives no delta-rules.",
+         "Terms are compared up to renaming of bound variables (alpha-equivalence), as Shutt states for vau-x. The Lean gets this for free from de Bruijn indices.",
      ])
 
 # ---------------------------------------------------------------- 3. Values
-node("Values",
+node("IsValue",
      "Self-evaluating terms and values",
      "Self-evaluating terms `S` are the atoms and the three compound operatives. A value `V` is any term whose "
      "active subterms all sit inside an operative.",
@@ -218,6 +234,13 @@ variables were; then every value stays a value after substitution.
 
 A value is not the same as a normal form. `<vau x.[eval 5]>` is a value, but it still contains a redex
 inside its body, and the calculus may reduce it there.
+
+## In the Lean
+
+`Vau.IsValue` is an inductive predicate. Its constructors say: variables, atoms and the three compound
+operatives are values whatever their bodies are; a pair is a value if both parts are; `wrap t` is a value
+if `t` is. There is no constructor for `eval` or `comb`. `Vau.SelfEval` is the set `S`; the lemma
+`SelfEval.isValue` says every self-evaluating term is a value.
 """),
      [q("Is the variable `x` self-evaluating?",
         ["Yes", "No, but it is a value", "No, and it is not a value", "Only after substitution"],
@@ -233,11 +256,11 @@ inside its body, and the calculus may reduce it there.
         1, "Shutt substitutes only values. Variables are values, so putting a non-value in place of a variable could turn a value into a non-value.")],
      caveats=[
          "\"Within an operative\" is read here as: inside the body of one of the three compound operatives. Primitive operatives are atoms and have no subterms.",
-         "Shutt notes that a lazy variant (substituting any term) is also possible; this site, like the thesis, uses the eager rule.",
+         "For vau-e, Shutt notes that a lazy variant (substituting any term) is also possible. For vau-x he substitutes only values, so that substitution keeps values as values (thesis p. 203). The Lean follows vau-x.",
      ])
 
 # ---------------------------------------------------------------- 4. Substitution
-node("Substitution",
+node("inst",
      "Free variables and substitution of values",
      "`T[x <- V]` replaces each free occurrence of the variable `x` in `T` by the value `V`, renaming bound "
      "variables so that nothing is captured. Only `<vau x.T>` binds a variable.",
@@ -266,7 +289,19 @@ The renaming step is the usual guard against *capture*. Example: in `<vau x.[com
 variables, this changes nothing.
 
 **Only values are substituted.** Shutt defines `T[x <- V]` only for values `V`
-(see [Values](#/node/Values)). The rule beta-vau is the only rule that substitutes.
+(see [Values](#/node/IsValue)). The rule beta-vau is the only rule that substitutes.
+
+## In the Lean
+
+With de Bruijn indices there are no names to rename. `Vau.inst t v` is `t[0 <- v]`: it replaces the
+variable `var 0` (the one bound by the `vau` whose body is `t`) by `v`, and lowers the other free
+indices by one. It is defined as `subst (scons v var) t`, where [subst](#/node/subst) substitutes for
+every free variable at once, and [scons](#/node/scons) builds the substitution "0 goes to `v`, `n + 1`
+goes to `var n`". Under a binder, [up](#/node/up) shifts the substituted terms with
+[rename](#/node/rename) so that nothing is captured.
+
+`inst` is defined for every `v`. The rule beta-vau in [Top](#/node/Top) uses it only when `v` is a
+value, as in the thesis. `Vau.FreeIn n t` says that index `n` is free in `t`.
 """),
      [q("Which construct binds a variable?",
         ["`[eval T]`", "`<vau x.T>`", "`<vau2.T>`", "`(T1 . T2)`"],
@@ -281,14 +316,14 @@ variables, this changes nothing.
         ["Any term", "Only values", "Only variables", "Only active terms"],
         1, "Shutt defines substitution only of values, so that values stay values.")],
      caveats=[
-         "The planned Lean may represent bound variables differently (for example with de Bruijn indices). Then renaming disappears from the definitions, but the meaning should be the same; the Lean will be the ground truth for what is proved.",
+         "The Lean uses de Bruijn indices, so renaming disappears from the definitions. The Lean does not prove that its `inst` agrees with Shutt's named substitution (9.19); that correspondence is the usual one between named terms up to alpha-equivalence and de Bruijn terms, and is not checked here.",
      ])
 
 # ---------------------------------------------------------------- 5. ReductionSchemata
-node("ReductionSchemata",
+node("Top",
      "The reduction rules of vau-x",
-     "Seven general rules (eval-self, eval-pair, eval-wrap, combine-wrap, beta-vau, parse-nil, parse-pair), plus "
-     "delta-rules for primitive operatives, say how an `[eval ...]` or `[combine ...]` term takes one step.",
+     "Seven general rules (eval-self, eval-pair, eval-wrap, combine-wrap, beta-vau, parse-nil, parse-pair) "
+     "say how an `[eval ...]` or `[combine ...]` term takes one step. Shutt also allows delta-rules; the Lean has none.",
      L("""
 ## Plain English
 
@@ -322,15 +357,19 @@ that keep the calculus confluent (thesis Definition 9.22). They are not part of 
 - *combine-wrap*: calling an applicative on a proper list of operands `(T1 ... Tm)` (here `m` may be 0)
   puts an `[eval ...]` around each operand and passes the list to the underlying combiner.
 - *beta-vau*: calling `<vau x.T>` substitutes the operand tree for `x` in the body. The operand must be a
-  [value](#/node/Values), so any `[eval Ti]` from combine-wrap must finish first.
+  [value](#/node/IsValue), so any `[eval Ti]` from combine-wrap must finish first.
 - *parse-nil*: `<vau0.T>` accepts the empty list and continues as `T`.
 - *parse-pair*: `<vau2.T0>` takes a pair of operands apart: `T0` gets `T1`, and the combiner that comes
   out gets `T2`. This is currying. `T1` and `T2` do not have to be values.
 
-A rule may be used on any subterm, not only at the top. That is the *compatible closure*, a planned node.
-The rules can overlap in where they apply, so reduction is not deterministic; Shutt's thesis shows that
-the result does not depend on the order (Church-Rosser). That property is planned for the Lean, not
-proved here.
+A rule may be used on any subterm, not only at the top. That is the [compatible closure](#/node/Step).
+Several redexes can be present at once, so reduction is not deterministic. Shutt's thesis shows that the
+any two reduction paths can be joined again (Church-Rosser), and the Lean proves this for these rules:
+[confluence](#/node/confluence).
+
+In the Lean, `Vau.Top` has one constructor per rule: `evalSelf`, `evalPair`, `evalWrap`, `beta`,
+`combWrap`, `parsePair` and `parseNil`. combine-wrap uses [IsList](#/node/IsList) and
+[evalList](#/node/evalList); beta-vau uses [inst](#/node/inst) and [IsValue](#/node/IsValue).
 
 ## A worked example
 
@@ -387,8 +426,8 @@ the NEPLS talk, Lisp `lambda` "constructs fexprs with applicative wrappers aroun
      caveats=[
          "The rule names are this project's. Shutt numbers the schemata (9.25S), (9.25p), (9.25a), (9.25gamma), (9.25beta), (9.25vau0), (9.25vau2) and (9.25delta).",
          "combine-wrap needs a proper list of operands `(T1 ... Tm)`. An applicative called on an improper operand tree has no rule.",
-         "The worked example is ours, built in the style of the NEPLS talk's traced reduction. It uses only the seven general rules.",
-         "The planned Lean will start with the seven general rules. Whether and how delta-rules are included will be stated there.",
+         "The worked example is ours, built in the style of the NEPLS talk's traced reduction. It uses only the seven general rules. The Lean checks both results with the evaluator of eval_is_reduction: `Vau.run_F_F7` (unwrapped, result `(F 7)`) and `Vau.run_wrapF_F7` (wrapped, result `7`), in `Vau/Eval.lean`.",
+         "The Lean has the seven general rules and no delta-rules. Every result on this site is about that calculus.",
      ])
 
 # ---------------------------------------------------------------- 11 (informal). Environments
@@ -441,7 +480,7 @@ answer to its parent ([Fexpr the Ultimate Lambda](%D1)).
         ["Yes", "No: environments are encapsulated", "Only the static environment", "Only in vau-x"],
         1, "Environments and compound operatives are encapsulated objects. Fexprs can take apart pairs and atoms only.")],
      caveats=[
-         "Informal only. Formal environments in Lean are a later, planned node.",
+         "Informal only. There is no Lean for environments yet; that is planned (see DerivedLambda).",
          "This node follows the pure vau-e calculus. Kernel's environments are mutable and have parents (`$define!`); mutation is not covered here (Shutt treats it in thesis chapter 12).",
          "The `{{...}}` notation is this site's ASCII for Shutt's double angle brackets.",
      ])
@@ -526,7 +565,7 @@ builds the operative, and the operands are substituted when it is called.
         ["Yes, a delta-rule", "No: `$vau` needs symbols, which vau-x does not have", "Yes, beta-vau", "Only for `#ignore`"],
         1, "Shutt says no natural vau-x schema can be built for `$vau`.")],
      caveats=[
-         "Informal only. This node follows Shutt's pure vau-e calculus. The Lean nodes for environments and `$vau` are planned for later.",
+         "Informal only. This node follows Shutt's pure vau-e calculus. There is no Lean for environments or `$vau` yet.",
          "In vau-e the body of a compound operative is one expression; Kernel allows a sequence. Shutt explains that without side effects one expression is enough.",
          "Kernel creates a fresh child environment for each call, which matters once environments can be mutated. Pure vau-e uses the join `match(...) . e1` instead.",
      ])

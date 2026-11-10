@@ -17,9 +17,9 @@
    "talkUrl": null,
    "license": "MIT (this repository)",
    "url": "https://web.cs.wpi.edu/~jshutt/dissertation/etd-090110-124904-Shutt-Dissertation.pdf",
-   "description": "What vau calculus is: explicit evaluation, the pure vau-x syntax and its reduction rules. A Lean 4 formalization is planned.",
+   "description": "Explicit evaluation, the pure vau-x calculus and its rules, with a Lean 4 formalization: confluence, evaluation as reduction, conservative extension of call-by-value lambda, nontrivial contextual equivalence.",
    "explainer": true,
-   "nodeCount": 18
+   "nodeCount": 44
   }
  ],
  "others": []

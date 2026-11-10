@@ -2,50 +2,53 @@
 
 This page says whether the site's statements are faithful to their sources.
 
-## Status: no theorems yet
+## Status
 
-There is **no Lean in this repository yet**, so there is no formal statement to review. Every node is a
-concept marked **PLAN**. When Lean lands, this page will compare each headline's Lean statement with the
-claim it is named for, label any PARTIAL (sorry) or CONDITIONAL result, and record an independent
-honesty audit.
+The Lean in `Vau/` has four headline theorems, with no `sorry`. This page compares each one with the
+claim it is named for. The claim-by-claim honesty audit is `VAU_AUDIT.md` in the repository.
+
+| headline | Lean statement (shortened) | faithful to | what is this project's choice |
+|---|---|---|---|
+| [eval_is_reduction](#/node/eval_is_reduction) | `Run (eval t) v -> Steps (eval t) v /\ IsValue v` | NEPLS talk: evaluation "a special case of term reduction" | the evaluator `Run`; one direction only |
+| [conservative_extension](#/node/conservative_extension) | `LConv M N <-> Conv (embed M) (embed N)` | thesis 15.4, map (15.28), informal | vau-x form of the map; call-by-value lambda. Shutt describes the image as the full lambda calculus; for vau-x the Lean shows it is lambda-v (see the embed node) |
+| [confluence](#/node/confluence) | `Steps t s1 -> Steps t s2 -> exists u, Steps s1 u /\ Steps s2 u` | thesis 14.1.4 with Theorem 13.104 (Church-Rosser of vau-x) | direct proof; no delta-rules; no SRS framework |
+| [nontrivial](#/node/nontrivial) | `Not (eval (dat 5) = dat 5) /\ CtxEquiv (eval (dat 5)) (dat 5) /\ Not (CtxEquiv (dat 5) (dat 6))` | the point of thesis chapter 15 against Wand (1998) | the observation in `CtxEquiv` |
+| [DerivedLambda](#/node/DerivedLambda) | none: **PLAN** | thesis (4.10) | not formalized |
+
+None of the headlines has a PARTIAL or CONDITIONAL label: none uses `sorry`, and none has a hypothesis
+beyond what the table shows.
 
 ## Definitions checked against the thesis
 
-The definitions on this site were written from Shutt's thesis, chapter 9, and checked by the drafting
-model against the extracted text of the PDF. No person has checked them.
+The definitions on this site and in the Lean were written from Shutt's thesis, chapter 9, and checked by
+the drafting model against the extracted text of the PDF. No person has checked them.
 
 | node | source | notes |
 |---|---|---|
-| [Syntax](#/node/Syntax) | thesis (9.16)-(9.18), (9.25) | ASCII notation; primitive data and operatives left as parameters |
-| [Values](#/node/Values) | thesis (9.25), discussion after (9.5) | "within an operative" read as: inside the body of a compound operative |
-| [Substitution](#/node/Substitution) | thesis (9.19) | defined for values only, as in the thesis |
-| [ReductionSchemata](#/node/ReductionSchemata) | thesis (9.25) | rule names are this project's; delta-rules described but not among the seven |
+| [Term](#/node/Term) | thesis (9.16)-(9.18), (9.25) | de Bruijn indices; primitives numbered |
+| [IsValue](#/node/IsValue) | thesis (9.25), discussion after (9.5) | "within an operative" read as: inside the body of a compound operative |
+| [inst](#/node/inst) | thesis (9.19) | de Bruijn; defined for all terms, used only on values (beta-vau) |
+| [Top](#/node/Top) | thesis (9.25) | rule names are this project's; no delta-rules |
 | [Environments](#/node/Environments) | thesis (9.1), (9.6), (9.7) | informal; pure vau-e, no mutation |
 | [VauEnvironments](#/node/VauEnvironments) | thesis (9.7beta), (9.12), section 4.2 | informal; vau-x itself has no `$vau` rule |
 | [Start](#/node/Start) | thesis 8.4.1 and chapter 15; NEPLS talk; Wand 1998 | motivation; Wand summarized, not quoted |
-| [CompatibleClosure](#/node/CompatibleClosure) | thesis section 2.3 | general definition of compatibility; vau-x step relation as planned for Lean |
+| [Step](#/node/Step) | thesis section 2.3 | compatible closure, checked by `Step.plug` and `Step.exists_ctx` |
 
-## Planned headlines and later nodes (Step 2)
+## Nodes that are still PLAN
 
-These nodes say what the Lean is **meant** to state. Nothing in them is proved. Each precise statement is
-this project's choice, and the table says where it goes beyond the thesis.
-
-| node | source | what is this project's own choice |
+| node | source | note |
 |---|---|---|
-| [EvalIsReduction](#/node/EvalIsReduction) | NEPLS talk (one phrase) | the evaluator; the one-direction statement |
-| [LambdaEmbedding](#/node/LambdaEmbedding) | thesis (15.28), section 15.4 | the vau-x version of the map; the call-by-value reading |
-| [ConservativeExtension](#/node/ConservativeExtension) | thesis section 15.4 (informal) | the iff statement; the planned proof route through confluence |
-| [Confluence](#/node/Confluence) | thesis Theorem 13.104, section 14.1.4 | a direct parallel-reduction proof instead of the SRS framework |
-| [WrapUnwrap](#/node/WrapUnwrap) | thesis (9.12), section 4.2 | ASCII notation |
-| [DerivedLambda](#/node/DerivedLambda) | thesis (4.10) | the planned statement about a call of `$lambda` |
-| [NontrivialEquivalence](#/node/NontrivialEquivalence) | thesis Definition 13.90 | the notion of observation for vau-x; the two example pairs |
-| [EnvironmentOpacity](#/node/EnvironmentOpacity) | thesis chapter 5 | informal; may stay planned |
-| [EncapsulationTypes](#/node/EncapsulationTypes) | thesis section 7.2 | later; no Lean planned now |
+| [WrapUnwrap](#/node/WrapUnwrap) | thesis (9.12), section 4.2 | the wrapper `<T>` itself is in the Lean; `$wrap`/`$unwrap` are not |
+| [DerivedLambda](#/node/DerivedLambda) | thesis (4.10) | needs environments |
+| [EnvironmentOpacity](#/node/EnvironmentOpacity) | thesis chapter 5 | informal |
+| [EncapsulationTypes](#/node/EncapsulationTypes) | thesis section 7.2 | later |
 | [ActorLayer](#/node/ActorLayer) | Schumacher's three posts | later; "no published confluence proof" means we found none |
 
 ## Claims this site does not make
 
-- It does not claim that any property of vau calculus is proved in Lean. None is, yet.
+- It does not claim that the Lean formalizes Shutt's regular substitutive reduction systems, or any
+  vau calculus other than vau-x without delta-rules.
+- It does not claim that the de Bruijn `inst` is proved equal to Shutt's named substitution.
 - It reports that Shutt's thesis obtains Church-Rosser for vau-x through a general theorem
-  (sections 13.4 and 14.1.4). It does not check that proof.
+  (sections 13.4 and 14.1.4). It does not check that proof; it proves the vau-x conclusion separately.
 - It does not describe Kernel's mutable environments, continuations, or other impure features.

@@ -1,0 +1,6 @@
+name = "vau"
+version = "0.1.0"
+defaultTargets = ["Vau"]
+
+[[lean_lib]]
+name = "Vau"

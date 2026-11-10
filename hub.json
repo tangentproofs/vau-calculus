@@ -13,11 +13,11 @@
   "categoryId": "DIC_kwDOVo2Ro84DKxrj"
  },
  "page": {
-  "desc": "Unofficial, AI-drafted plain-English explainer of John N. Shutt's vau calculus, with a Lean 4 formalization planned in the same repository.",
+  "desc": "Unofficial, AI-drafted plain-English explainer of John N. Shutt's vau calculus, with a Lean 4 formalization of the pure vau-x calculus in the same repository.",
   "brandHtml": "vau calculus <em>explained</em>",
-  "taglineHtml": "John N. Shutt's vau calculus, in <em>plain English</em>: why evaluation must be explicit, the pure vau-x syntax and its reduction rules, and a plan for a Lean&nbsp;4 formalization.",
+  "taglineHtml": "John N. Shutt's vau calculus, in <em>plain English</em>: why evaluation must be explicit, the pure vau-x syntax and its reduction rules, and a Lean&nbsp;4 formalization of vau-x: confluence, evaluation as reduction, conservative extension of call-by-value lambda, and nontrivial contextual equivalence.",
   "navHtml": "",
-  "notesHtml": "<div class=\"fan big-disclaimer\"><p><b>Not official documentation.</b> This site is an independent, unofficial explainer. It is not written, reviewed, endorsed or maintained by John N. Shutt, by Dale Schumacher, by Mitchell Wand, or by any author of the cited sources. An AI model (Claude) drafted the explanations, and no person has reviewed them. They may contain mistakes. The cited thesis, talk and posts are the ground truth for the theory. When Lean exists in this repository, the Lean is the ground truth for what this project proves.</p><p>The code and text in this repository are under the MIT License. The cited works keep their own copyright; this site quotes only short, attributed phrases from them.</p></div>",
+  "notesHtml": "<div class=\"fan big-disclaimer\"><p><b>Not official documentation.</b> This site is an independent, unofficial explainer. It is not written, reviewed, endorsed or maintained by John N. Shutt, by Dale Schumacher, by Mitchell Wand, or by any author of the cited sources. An AI model (Claude) drafted the explanations, and no person has reviewed them. They may contain mistakes. The cited thesis, talk and posts are the ground truth for the theory. The Lean in this repository is the ground truth for what this project proves; it covers the pure vau-x calculus only.</p><p>The code and text in this repository are under the MIT License. The cited works keep their own copyright; this site quotes only short, attributed phrases from them.</p></div>",
   "projectsHeading": "Explainers",
   "talkLabel": "talk",
   "talkDefaultUrl": "",

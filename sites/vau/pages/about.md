@@ -5,35 +5,29 @@ calculi for reasoning about **fexprs**: first-class Lisp combiners that receive 
 unevaluated. Shutt developed it in his PhD thesis (Worcester Polytechnic Institute, 2010) and used it as
 the basis of the Kernel programming language.
 
-## What is here now (Step 2)
+## What is here now (Step 3)
 
-- [Start here](#/start): the five **planned** headlines, then every node they build on, simplest first.
-- The [Start](#/node/Start) node explains why evaluation must be explicit. The definitions of the pure
-  **vau-x calculus** follow: [Syntax](#/node/Syntax), [Values](#/node/Values),
-  [Substitution](#/node/Substitution), the seven general rules in
-  [ReductionSchemata](#/node/ReductionSchemata), and their
-  [CompatibleClosure](#/node/CompatibleClosure).
-- The planned headlines: [EvalIsReduction](#/node/EvalIsReduction),
-  [ConservativeExtension](#/node/ConservativeExtension) (with [LambdaEmbedding](#/node/LambdaEmbedding)),
-  [Confluence](#/node/Confluence), [DerivedLambda](#/node/DerivedLambda) and
-  [NontrivialEquivalence](#/node/NontrivialEquivalence).
-- Environment nodes from vau-e: [Environments](#/node/Environments),
-  [VauEnvironments](#/node/VauEnvironments) and [WrapUnwrap](#/node/WrapUnwrap).
-- Later: [EnvironmentOpacity](#/node/EnvironmentOpacity), [EncapsulationTypes](#/node/EncapsulationTypes)
-  and the [ActorLayer](#/node/ActorLayer).
+- [Start here](#/start): the headline statements, then every definition they use, simplest first.
+- The [Start](#/node/Start) node explains why evaluation must be explicit.
+- The pure **vau-x calculus** in Lean (folder `Vau/`): [Term](#/node/Term), [IsValue](#/node/IsValue),
+  substitution [inst](#/node/inst), the seven rules [Top](#/node/Top), and their compatible closure
+  [Step](#/node/Step).
+- Four headlines **proved in Lean**:
+  [eval_is_reduction](#/node/eval_is_reduction),
+  [conservative_extension](#/node/conservative_extension) (through the lambda embedding
+  [embed](#/node/embed)), [confluence](#/node/confluence) and [nontrivial](#/node/nontrivial).
+- Still **PLAN** (no Lean): [DerivedLambda](#/node/DerivedLambda), and the environment nodes
+  [Environments](#/node/Environments), [VauEnvironments](#/node/VauEnvironments) and
+  [WrapUnwrap](#/node/WrapUnwrap). Later: [EnvironmentOpacity](#/node/EnvironmentOpacity),
+  [EncapsulationTypes](#/node/EncapsulationTypes) and the [ActorLayer](#/node/ActorLayer).
 
-## What is not here yet
+## What the Lean does not do
 
-**No Lean exists in this repository yet.** All 18 nodes are *concepts* marked **PLAN: no Lean yet**. A
-node explains the theory from the cited sources and says what the Lean is meant to state. It does not
-say that anything is proved. The next step is a Lean 4 formalization of the pure vau-x rules in this
-repository: syntax, substitution, the reduction rules, their compatible closure, evaluation as a special
-case of reduction, the lambda embedding, conservative extension if it can be stated honestly, and
-confluence of the concrete vau-x rules.
-
-The Lean will **not** formalize Shutt's general framework of regular substitutive reduction systems. As
-Lean lands, nodes will change from PLAN to proved or partial, and the [Trust](#/trust) page will list the
-sorry and axiom counts.
+The Lean does **not** formalize Shutt's general framework of regular substitutive reduction systems
+(thesis chapter 13). Every result is about the concrete vau-x rules, with no delta-rules and no
+environments. Some definitions are this project's own choice (the evaluator, the notion of
+observation); their nodes say so. The [Trust](#/trust) page lists the `sorry` and axiom counts and the
+`#print axioms` output.
 
 ## How to read a node
 

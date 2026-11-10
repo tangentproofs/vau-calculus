@@ -17,65 +17,38 @@
  "title": "Vau calculus, explained",
  "brand": "vau calculus <em>explained</em>",
  "h1": "Vau calculus: fexprs with a real equational theory, because evaluation is explicit",
- "lead": "In Lisp, a <b>fexpr</b> is a first-class combiner that receives its operands <em>unevaluated</em>. Mitchell Wand showed in 1998 that if a calculus makes evaluation <em>implicit</em> (every reduction is evaluation), then adding fexprs makes its theory of contextual equivalence trivial. John N. Shutt's <b>vau calculi</b> avoid this by making evaluation <em>explicit</em>: a term <code>[eval T]</code> asks for evaluation, and the operand <code>T</code> alone is just data. This site explains the pure <b>vau-x calculus</b> (Shutt's thesis, section 9.3) and lays out a <b>planned</b> Lean formalization as a graph of 18 nodes, with five planned headlines: evaluation is reduction, conservative extension of the lambda calculus, confluence, derived <code>$lambda</code>, and nontrivial contextual equivalence. <strong>No Lean exists yet.</strong> Every node is marked <b>PLAN</b>: it explains the theory from the sources and claims nothing is proved.",
- "desc": "Unofficial, AI-drafted plain-English explainer of John N. Shutt's vau calculus, with a planned Lean 4 formalization laid out as a graph of 18 PLAN nodes: syntax, substitution, the vau-x reduction rules, compatible closure, evaluation as reduction, the lambda embedding, conservative extension, confluence, environments, wrap and unwrap, derived $lambda, and nontrivial contextual equivalence. No Lean exists yet.",
- "startTitle": "Start here: the planned headlines",
- "startLink": "Start here: the planned headlines",
- "startIntro": "Five planned headline results, then every node you need to read them, simplest first. There is <b>no Lean yet</b>, so nothing here is proved: each node is marked <b>PLAN</b> and says what the Lean is meant to state.",
- "startNote": "<p>All definitions here follow Shutt's PhD thesis (WPI, 2010), chapter 9: the pure <b>vau-x calculus</b> of section 9.3, and, only to make <code>$vau</code> understandable, the environment calculus <b>vau-e</b> of section 9.1. Notation is written in plain ASCII: <code>[eval T]</code>, <code>[combine T1 T2]</code>, <code>&lt;T&gt;</code> for an applicative, and <code>&lt;vau x.T&gt;</code>, <code>&lt;vau0.T&gt;</code>, <code>&lt;vau2.T&gt;</code> for the three compound operatives. The rule names (eval-self and so on) are this project's names for Shutt's schemata (9.25S), (9.25p), (9.25a), (9.25gamma), (9.25beta), (9.25vau0) and (9.25vau2).</p>",
- "sizeNote": "Step 2: 18 nodes, all PLAN. Written from Shutt's thesis (chapters 2, 4, 5, 7, 8, 9, 13-15), his 2007 NEPLS talk, and Dale Schumacher's posts. No Lean exists in this repository yet.",
- "agentCtx": "an unofficial explainer of John N. Shutt's vau calculus (pure vau-x calculus, thesis section 9.3), with a planned Lean 4 formalization shown as a graph of 18 planned nodes; no Lean exists yet, so every node is a planned concept and nothing is proved",
- "roots": [],
- "ns": "",
+ "lead": "In Lisp, a <b>fexpr</b> is a first-class combiner that receives its operands <em>unevaluated</em>. Mitchell Wand showed in 1998 that in his calculus, where evaluation is <em>implicit</em> (every reduction is evaluation) and fexprs are fully reflective, contextual equivalence is trivial. John N. Shutt's <b>vau calculi</b> avoid this by making evaluation <em>explicit</em>: a term <code>[eval T]</code> asks for evaluation, and the operand <code>T</code> alone is just data. This site explains the pure <b>vau-x calculus</b> (Shutt's thesis, section 9.3) and a <b>Lean 4 formalization</b> of it in this repository, with no <code>sorry</code>. Four headlines are proved in Lean for the concrete vau-x rules: evaluation is a special case of reduction, vau-x conservatively extends the call-by-value lambda calculus, the rules are confluent, and contextual equivalence is nontrivial. A fifth, derived <code>$lambda</code>, needs environments and is still a <b>PLAN</b>. The Lean does <b>not</b> formalize Shutt's general framework of regular substitutive reduction systems.",
+ "desc": "Unofficial, AI-drafted explainer of John N. Shutt's vau calculus with a Lean 4 formalization of the pure vau-x calculus (no sorry, no Mathlib): syntax, de Bruijn substitution, the seven reduction rules, compatible closure, and four proved headlines: evaluation is reduction, conservative extension of call-by-value lambda, confluence, and nontrivial contextual equivalence. Derived $lambda and environments are planned.",
+ "startTitle": "Start here: the headline statements",
+ "startLink": "Start here: the headline statements",
+ "startIntro": "The headline statements, then every definition you need to read them, simplest first. Four headlines are <b>proved in Lean</b> (no <code>sorry</code>); <code>DerivedLambda</code> is still a <b>PLAN</b> and claims nothing.",
+ "startNote": "<p>All definitions follow Shutt's PhD thesis (WPI, 2010), chapter 9: the pure <b>vau-x calculus</b> of section 9.3, and, only to make <code>$vau</code> understandable, the environment calculus <b>vau-e</b> of section 9.1. The Lean (folder <code>Vau/</code>) uses de Bruijn indices for variables and has no delta-rules. In the text, notation is ASCII: <code>[eval T]</code>, <code>[combine T1 T2]</code>, <code>&lt;T&gt;</code> for an applicative, and <code>&lt;vau x.T&gt;</code>, <code>&lt;vau0.T&gt;</code>, <code>&lt;vau2.T&gt;</code> for the three compound operatives. The rule names (eval-self and so on) are this project's names for Shutt's schemata (9.25S), (9.25p), (9.25a), (9.25gamma), (9.25beta), (9.25vau0) and (9.25vau2).</p>",
+ "sizeNote": "Step 3: Lean 4 formalization of vau-x in Vau/ (7 files, no sorry, no axiom declarations). 4 headlines proved, 1 planned. Nodes without Lean are marked PLAN.",
+ "agentCtx": "an unofficial explainer of John N. Shutt's vau calculus (pure vau-x calculus, thesis section 9.3) with a Lean 4 formalization in the same repository (folder Vau/, no Mathlib, no sorry); four headlines are proved for the concrete vau-x rules with no delta-rules, and nodes about environments, $lambda, hygiene, encapsulation and actors are still planned",
+ "roots": [
+  "Vau"
+ ],
+ "ns": "Vau.",
  "headlines": [
-  "EvalIsReduction",
-  "ConservativeExtension",
-  "Confluence",
-  "DerivedLambda",
-  "NontrivialEquivalence"
+  "eval_is_reduction",
+  "conservative_extension",
+  "confluence",
+  "nontrivial",
+  "DerivedLambda"
  ],
  "mathlibNamespaces": [],
  "mathlibNames": [],
  "gloss": {},
  "headlineFiles": [],
  "writtenBy": "drafted by Claude (AI), not reviewed by a person",
- "bannerHtml": "<div class=\"disclaimer\" role=\"note\"><b>Not official documentation.</b> This is an unofficial explainer of John N. Shutt's vau calculus. It is not written, reviewed or endorsed by John N. Shutt, Dale Schumacher, Mitchell Wand, or any author of the cited sources. An AI model (Claude) drafted it, and no person has reviewed it. It may contain errors. The cited sources are the ground truth for the theory. <b>No Lean exists yet</b>: every node is a PLAN and nothing here is a proved theorem.<span class=\"lic\">Licence of this repository: <a href=\"https://github.com/tangentproofs/vau-calculus/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">MIT License</a>. Cited works keep their own copyright; only short, attributed phrases are quoted.</span></div>",
+ "bannerHtml": "<div class=\"disclaimer\" role=\"note\"><b>Not official documentation.</b> This is an unofficial explainer of John N. Shutt's vau calculus. It is not written, reviewed or endorsed by John N. Shutt, Dale Schumacher, Mitchell Wand, or any author of the cited sources. An AI model (Claude) drafted the text and the Lean, and no person has reviewed them. The text may contain errors; the Lean statements are the ground truth for what is proved, and the cited sources are the ground truth for the theory. <b>The Lean covers the pure vau-x calculus only</b> (no delta-rules, no environments). It does not formalize Shutt's general framework. Nodes marked PLAN have no Lean.<span class=\"lic\">Licence of this repository: <a href=\"https://github.com/tangentproofs/vau-calculus/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">MIT License</a>. Cited works keep their own copyright; only short, attributed phrases are quoted.</span></div>",
  "creditHtml": "The vau calculus is the work of <a href=\"https://web.cs.wpi.edu/~jshutt/\" target=\"_blank\" rel=\"noopener\">John N. Shutt</a> (PhD thesis, WPI, 2010).",
- "footerHtml": "The vau calculus is the work of John N. Shutt (PhD thesis, WPI, 2010). This explainer is unofficial and was drafted by Claude (AI); no person has reviewed it, and it may be wrong. The cited sources are the ground truth for the theory; no Lean exists here yet. Repository: <a href=\"https://github.com/tangentproofs/vau-calculus\">tangentproofs/vau-calculus</a> (MIT License). Part of <a href=\"../\">the tangentproofs/vau-calculus index</a>. Progress is stored only in this browser.",
- "aboutCreditMd": "## Credit, licence and status\n\n- **The theory:** the vau calculi are the work of [John N. Shutt](https://web.cs.wpi.edu/~jshutt/), in his PhD thesis *Fexprs as the basis of Lisp function application; or, $vau: the ultimate abstraction* (Worcester Polytechnic Institute, 2010) and his 2007 NEPLS talk. The actor view of Kernel is from Dale Schumacher's posts. The triviality result is from Mitchell Wand, *The Theory of Fexprs is Trivial* (Lisp and Symbolic Computation, 1998).\n- **This explainer:** unofficial and independent. Drafted by Claude (AI) at the request of the repository owner. No person has reviewed it, and the cited authors have not seen it. It may contain errors. Every node is `review: draft`.\n- **Lean:** none yet. When Lean lands in this repository, the node statuses will change from PLAN to proved or partial, and the Trust page will list the sorry and axiom counts.\n- **Licence:** this repository is under the [MIT License](https://github.com/tangentproofs/vau-calculus/blob/main/LICENSE). The cited works keep their own copyright. This site quotes only short, attributed phrases and does not copy the thesis.\n- **Corrections:** open an issue or pull request on [tangentproofs/vau-calculus](https://github.com/tangentproofs/vau-calculus), or comment on any node.",
+ "footerHtml": "The vau calculus is the work of John N. Shutt (PhD thesis, WPI, 2010). This explainer and its Lean are unofficial and were drafted by Claude (AI); no person has reviewed them. The Lean statements are the ground truth for what is proved; the cited sources are the ground truth for the theory. Repository: <a href=\"https://github.com/tangentproofs/vau-calculus\">tangentproofs/vau-calculus</a> (MIT License). Part of <a href=\"../\">the tangentproofs/vau-calculus index</a>. Progress is stored only in this browser.",
+ "aboutCreditMd": "## Credit, licence and status\n\n- **The theory:** the vau calculi are the work of [John N. Shutt](https://web.cs.wpi.edu/~jshutt/), in his PhD thesis *Fexprs as the basis of Lisp function application; or, $vau: the ultimate abstraction* (Worcester Polytechnic Institute, 2010) and his 2007 NEPLS talk. The actor view of Kernel is from Dale Schumacher's posts. The triviality result is from Mitchell Wand, *The Theory of Fexprs is Trivial* (Lisp and Symbolic Computation, 1998).\n- **This explainer and its Lean:** unofficial and independent. Drafted by Claude (AI) at the request of the repository owner. No person has reviewed them, and the cited authors have not seen them. Every node is `review: draft`.\n- **Lean:** folder `Vau/`, Lean 4 v4.32.2, no Mathlib, no `sorry`, no `axiom` declarations. See the [Trust](#/trust) page for the `#print axioms` output of each headline.\n- **Licence:** this repository is under the [MIT License](https://github.com/tangentproofs/vau-calculus/blob/main/LICENSE). The cited works keep their own copyright. This site quotes only short, attributed phrases and does not copy the thesis.\n- **Corrections:** open an issue or pull request on [tangentproofs/vau-calculus](https://github.com/tangentproofs/vau-calculus), or comment on any node.",
  "concepts": {
-  "Syntax": {
-   "deps": [],
-   "formal": "planned",
-   "url": "https://web.cs.wpi.edu/~jshutt/dissertation/etd-090110-124904-Shutt-Dissertation.pdf#page=206"
-  },
-  "Values": {
-   "deps": [
-    "Syntax"
-   ],
-   "formal": "planned",
-   "url": "https://web.cs.wpi.edu/~jshutt/dissertation/etd-090110-124904-Shutt-Dissertation.pdf#page=206"
-  },
-  "Substitution": {
-   "deps": [
-    "Syntax",
-    "Values"
-   ],
-   "formal": "planned",
-   "url": "https://web.cs.wpi.edu/~jshutt/dissertation/etd-090110-124904-Shutt-Dissertation.pdf#page=204"
-  },
-  "ReductionSchemata": {
-   "deps": [
-    "Syntax",
-    "Values",
-    "Substitution"
-   ],
-   "formal": "planned",
-   "url": "https://web.cs.wpi.edu/~jshutt/dissertation/etd-090110-124904-Shutt-Dissertation.pdf#page=206"
-  },
   "Environments": {
    "deps": [
-    "Syntax"
+    "Term"
    ],
    "formal": "planned",
    "url": "https://web.cs.wpi.edu/~jshutt/dissertation/etd-090110-124904-Shutt-Dissertation.pdf#page=195"
@@ -83,59 +56,19 @@
   "VauEnvironments": {
    "deps": [
     "Environments",
-    "ReductionSchemata"
+    "Top"
    ],
    "formal": "planned",
    "url": "https://web.cs.wpi.edu/~jshutt/dissertation/etd-090110-124904-Shutt-Dissertation.pdf#page=199"
   },
   "Start": {
    "deps": [
-    "Syntax",
-    "Values",
-    "ReductionSchemata",
+    "Term",
+    "IsValue",
+    "Top",
     "VauEnvironments"
    ],
-   "formal": "planned",
    "url": "https://web.cs.wpi.edu/~jshutt/jns-nepls07.txt"
-  },
-  "CompatibleClosure": {
-   "deps": [
-    "ReductionSchemata"
-   ],
-   "formal": "planned",
-   "url": "https://web.cs.wpi.edu/~jshutt/dissertation/etd-090110-124904-Shutt-Dissertation.pdf#page=53"
-  },
-  "EvalIsReduction": {
-   "deps": [
-    "CompatibleClosure",
-    "Start"
-   ],
-   "formal": "planned",
-   "url": "https://web.cs.wpi.edu/~jshutt/jns-nepls07.txt"
-  },
-  "LambdaEmbedding": {
-   "deps": [
-    "Syntax",
-    "Substitution",
-    "CompatibleClosure"
-   ],
-   "formal": "planned",
-   "url": "https://web.cs.wpi.edu/~jshutt/dissertation/etd-090110-124904-Shutt-Dissertation.pdf#page=365"
-  },
-  "Confluence": {
-   "deps": [
-    "CompatibleClosure"
-   ],
-   "formal": "planned",
-   "url": "https://web.cs.wpi.edu/~jshutt/dissertation/etd-090110-124904-Shutt-Dissertation.pdf#page=254"
-  },
-  "ConservativeExtension": {
-   "deps": [
-    "LambdaEmbedding",
-    "Confluence"
-   ],
-   "formal": "planned",
-   "url": "https://web.cs.wpi.edu/~jshutt/dissertation/etd-090110-124904-Shutt-Dissertation.pdf#page=366"
   },
   "WrapUnwrap": {
    "deps": [
@@ -152,15 +85,6 @@
    ],
    "formal": "planned",
    "url": "https://web.cs.wpi.edu/~jshutt/dissertation/etd-090110-124904-Shutt-Dissertation.pdf#page=94"
-  },
-  "NontrivialEquivalence": {
-   "deps": [
-    "Confluence",
-    "CompatibleClosure",
-    "Start"
-   ],
-   "formal": "planned",
-   "url": "https://web.cs.wpi.edu/~jshutt/dissertation/etd-090110-124904-Shutt-Dissertation.pdf#page=295"
   },
   "EnvironmentOpacity": {
    "deps": [
@@ -180,13 +104,24 @@
   "ActorLayer": {
    "deps": [
     "VauEnvironments",
-    "Confluence"
+    "confluence"
    ],
    "formal": "planned",
    "url": "https://dalnefre.com/wp/2011/11/fexpr-the-ultimate-lambda/"
   }
  },
- "headlineLegend": "planned headline (no Lean yet)",
- "headlineWord": "planned headline",
- "startSide": "Read <a href=\"#/start\">the planned headlines</a>: what each is meant to state, then the nodes it builds on, simplest first. Nothing is proved yet."
+ "headlineLegend": "headline (proved, or PLAN)",
+ "headlineWord": "headline",
+ "startSide": "Read <a href=\"#/start\">the headline statements</a>, then the definitions they use, simplest first. Four are proved in Lean; one is a PLAN.",
+ "leanFormal": true,
+ "manualEdges": {
+  "meaningDeps": {
+   "CtxEquiv": [
+    "Ctx.plug"
+   ],
+   "nontrivial": [
+    "Term"
+   ]
+  }
+ }
 }

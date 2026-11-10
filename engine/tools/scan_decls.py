@@ -262,6 +262,14 @@ def main():
                 n = ml_name(t)
                 if "_" not in n.rsplit(".", 1)[-1] and n not in ml: ml.append(n)
         d["mathlib"] = ml
+    # Local change (vau-calculus): "leanFormal": true marks each Lean theorem "proved" when its source text
+    # has no `sorry`, and "partial" when it has one, so the site shows the same pills as for concept nodes.
+    # This is a text check only; the Trust page gives the `#print axioms` output from a real build.
+    if CFG.get("leanFormal"):
+        for d in decls:
+            if d["kind"] == "theorem":
+                body = "\n".join(strip_comments(d["text"].split("\n")))
+                d["formal"] = "partial" if re.search(r"\bsorry\b", body) else "proved"
     # Concept nodes (scan.config "concepts", e.g. prove2me): explainer nodes with no Lean declaration behind
     # them, for sites that explain a website rather than a repository. Absent for every other site.
     for cid, c in CFG.get("concepts", {}).items():
