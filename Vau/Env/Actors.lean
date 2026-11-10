@@ -4,7 +4,7 @@ import Vau.Env.Encapsulation
 # An actor-style evaluator with concurrent operand evaluation
 
 Dale Schumacher implements a Kernel-like language with actors in his language Humus ("Fexpr the
-Ultimate Lambda", 2011, and later posts). In his design:
+Ultimate Lambda" and "Semantic Extensibility with Vau", 2011). In his design:
 
 * an expression is an actor that answers an `#eval` request: a pair evaluates its left part with a
   new customer `k_comb`, and `k_comb` sends a `#comb` request with the right part to the combiner
@@ -26,7 +26,10 @@ is one delivery (Schumacher's environment actors forward `#lookup` to their pare
 not modeled step by step).
 
 **Not modeled:** actor addresses, mailboxes, message order and fairness, actor state changes other
-than the customers above, and Humus itself. The theorems are about this tree model, not about
+than the customers above, environment mutation (Schumacher's `&define!` and `#bind`; without
+mutation there are no races), concurrent parameter matching (here `match` is one step), and Humus
+itself. In Schumacher's posts an applicative evaluates to itself; here evaluating an applicative
+follows Shutt's (9.7a), as in the rest of the Lean vau-e. The theorems are about this tree model, not about
 Schumacher's code or a general actor semantics.
 
 Results:
@@ -37,7 +40,8 @@ Results:
 * `actor_determinate`: any two runs (any two interleavings) that reply primitive data reply the
   same data;
 * `actor_results_join`: any two replies can be reduced to a common term;
-* `fork_interleave`: two deliveries in the two branches of a fork can be done in either order.
+* `fork_interleave`: two deliveries in the two branches of a fork can be done in either order, and
+  both orders reach the same configuration.
 -/
 
 namespace VauE
@@ -200,14 +204,13 @@ theorem actor_results_join {c : Conf} {v1 v2 : Term} (h1 : ActorRun c (ret v1))
     (h2 : ActorRun c (ret v2)) : exists u, Steps v1 u /\ Steps v2 u :=
   confluence (actor_sound h1) (actor_sound h2)
 
-/-- **Concurrency.** Two deliveries in the two branches of a fork can be done in either order, and
-both orders reach the same configuration. -/
+/-- **Concurrency.** Two deliveries in the two branches of a fork can be done in either order:
+left then right, or right then left, and both orders reach the same configuration. -/
 theorem fork_interleave {c1 c1' c2 c2' : Conf} (h1 : Deliver c1 c1') (h2 : Deliver c2 c2') :
-    ActorRun (fork c1 c2) (fork c1' c2') /\ ActorRun (fork c1 c2) (fork c1' c2') /\
-    Deliver (fork c1 c2) (fork c1' c2) /\ Deliver (fork c1 c2) (fork c1 c2') :=
-  And.intro (Vau.Star.tail (Vau.Star.single (Deliver.forkL c2 h1)) (Deliver.forkR c1' h2))
-    (And.intro (Vau.Star.tail (Vau.Star.single (Deliver.forkR c1 h2)) (Deliver.forkL c2' h1))
-      (And.intro (Deliver.forkL c2 h1) (Deliver.forkR c1 h2)))
+    (Deliver (fork c1 c2) (fork c1' c2) /\ Deliver (fork c1' c2) (fork c1' c2')) /\
+    (Deliver (fork c1 c2) (fork c1 c2') /\ Deliver (fork c1 c2') (fork c1' c2')) :=
+  And.intro (And.intro (Deliver.forkL c2 h1) (Deliver.forkR c1' h2))
+    (And.intro (Deliver.forkR c1 h2) (Deliver.forkL c2' h1))
 
 /-! ## A complete run -/
 

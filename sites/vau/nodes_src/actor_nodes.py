@@ -1,29 +1,31 @@
 # Step 8 nodes: an actor-style evaluator for vau-e (Vau/Env/Actors.lean). Node ids are Lean declarations.
-from _common import DALE_FEXPR, DALE_EXT, DALE_ACTORS, make, q
+from _common import DALE_FEXPR, DALE_EXT, make, q
 
 NODES = []
 node = make(NODES)
 
 MODEL = ("The actor model here is this project's tree-shaped abstraction of Schumacher's design: pending messages "
          "and waiting customers form a tree, and any pending message may be delivered next. It does not model actor "
-         "addresses, mailboxes, message order or fairness, environment actors forwarding `#lookup` step by step, or "
-         "Humus. The theorems are about this model, not about Schumacher's code or a general actor semantics.")
+         "addresses, mailboxes, message order or fairness, environment actors forwarding `#lookup` step by step, "
+         "environment mutation (Schumacher's `&define!` and `#bind`; without mutation there are no races, which is the "
+         "main reason determinacy holds), concurrent parameter matching (here `match` is one step), or Humus. In "
+         "Schumacher's posts an applicative evaluates to itself; here it follows Shutt's (9.7a). The theorems are "
+         "about this model, not about Schumacher's code or a general actor semantics.")
 
 
 def L(s):
-    return s.replace("%D1", DALE_FEXPR).replace("%D2", DALE_EXT).replace("%D3", DALE_ACTORS)
+    return s.replace("%D1", DALE_FEXPR).replace("%D2", DALE_EXT)
 
 
 node("VauE.actor_determinate",
-     "Concurrent actor evaluation gives one answer",
+     "Concurrent actor evaluation: one data result",
      "In a Lean model of Schumacher's actor evaluator, where operands are evaluated concurrently, any two runs "
      "(any two interleavings) that reply primitive data reply the same data.",
      L("""
 ## Plain English
 
 Dale Schumacher builds an evaluator for a Kernel-like language out of **actors**: objects that react to
-messages ([Fexpr the Ultimate Lambda](%D1), [Semantic Extensibility with Vau](%D2),
-[Implementing Actors in Kernel](%D3)). In his Humus code:
+messages ([Fexpr the Ultimate Lambda](%D1), [Semantic Extensibility with Vau](%D2)). In his Humus code:
 
 - an expression answers an `#eval` request; a pair evaluates its left part with a new customer
   `k_comb`, which then sends `#comb` with the right part to the combiner that comes back;
@@ -53,7 +55,8 @@ reductions of one term, and by [confluence of vau-e](#/node/VauE.confluence) a t
 normal form (`normal_unique`); primitive data is a normal form.
 
 Also proved: `actor_results_join` (any two replies have a common reduct), `fork_interleave` (two
-deliveries in the two branches of a fork can be done in either order), and `actor_example`, a complete
+deliveries in the two branches of a fork can be done in either order, and both orders reach the same
+configuration), and `actor_example`, a complete
 run of `(f 5 6)` with `f` bound to `list*`, where the second operand is evaluated first.
 """),
      [q("What does `actor_determinate` say?",
@@ -139,7 +142,7 @@ node("VauE.Deliver",
      """
 ## Plain English
 
-The rules follow Schumacher's actor behaviors: an `#eval` message to a pair creates `k_comb`; `k_comb`
+The rules follow Schumacher's actor behaviors, with the differences listed in the caveat: an `#eval` message to a pair creates `k_comb`; `k_comb`
 receiving the operator sends `#comb`; `#comb` to an applicative forks the evaluation of the operands;
 the join replies the pair; `#comb` to a compound operative sends `#eval` of the body; `#comb` to a
 primitive replies its result (the vau-e delta-rules).

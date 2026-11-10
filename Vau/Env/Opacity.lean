@@ -4,9 +4,10 @@ import Vau.Env.Lambda
 /-!
 # Environment opacity and hygiene in vau-e
 
-In Kernel a program cannot list the bindings of an environment or take it apart. It can only
-evaluate symbols in it. Shutt counts this encapsulation among his tactics for hygiene (thesis
-chapter 5), and as one reason why his fexprs do not make the theory trivial (chapter 15).
+In Kernel a program cannot take an environment apart; it can evaluate symbols in it. Shutt notes in
+thesis chapter 15 that fexprs cannot deconstruct environments, as one reason why his fexprs do not
+make the theory trivial. (His chapter 5 hygiene tactic for environments, about ancestors and
+mutation, is not modeled: vau-e has neither.)
 
 This file proves, for this formalization of vau-e:
 

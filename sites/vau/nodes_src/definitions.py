@@ -82,19 +82,22 @@ This repository has a Lean 4 formalization of the pure vau-x rules (folder `Vau/
 - [confluence](#/node/confluence) of the concrete vau-x rules;
 - [nontrivial](#/node/nontrivial): contextual equivalence in vau-x is not trivial.
 
-A fifth headline is about Kernel-style code with symbols and environments. A separate Lean model of
+Five more headlines are about Kernel-style code with symbols and environments. A separate Lean model of
 Shutt's vau-e calculus ([environments](#/node/VauE.Env), [`$vau`](#/node/VauE.vau_call),
 [wrap and unwrap](#/node/VauE.unwrap_wrap)) proves
 [derived_lambda](#/node/VauE.derived_lambda): Shutt's `$lambda`, defined from `$vau`, `wrap` and
 `eval`, evaluates its body with the parameters bound to the evaluated arguments, and
 `lambda_static_scope` shows that the body runs in the environment of the `$lambda` expression, not the
-caller's. With encapsulation types added to vau-e, [capsule_opacity](#/node/VauE.capsule_opacity) proves that
-a program without the decapsulator cannot see the content of an encapsulated object. Last, a Lean
-model of Dale Schumacher's actor evaluator, with concurrent operand evaluation, gives one answer in
-every interleaving: [actor_determinate](#/node/VauE.actor_determinate).
+caller's. [Confluence of vau-e](#/node/VauE.confluence) holds, and [env_opacity](#/node/VauE.env_opacity)
+shows that no program can tell apart two environments with the same lookups (observing reduction to
+data). With encapsulation types added to vau-e, [capsule_opacity](#/node/VauE.capsule_opacity) proves
+that a program that does not contain the decapsulator cannot see the content of an encapsulated
+object. Last, in a Lean model of Dale Schumacher's actor evaluator with concurrent operand evaluation,
+any two interleavings that reply primitive data reply the same data:
+[actor_determinate](#/node/VauE.actor_determinate).
 
 The Lean does **not** formalize Shutt's general framework of regular substitutive reduction systems
-(thesis chapter 13). [Confluence of vau-e](#/node/VauE.confluence) is proved directly too. Each vau-x result is about the concrete
+(thesis chapter 13); confluence is proved directly, for vau-x and for vau-e. Each vau-x result is about the concrete
 vau-x rules with no delta-rules.
 """),
      [q("In the lambda calculus with implicit evaluation, why does adding a fexpr that inspects its operand make the theory trivial?",
@@ -479,8 +482,9 @@ answer to its parent ([Fexpr the Ultimate Lambda](%D1)).
 
 The file `Vau/Env/Syntax.lean` (namespace `VauE`) defines vau-e terms and environments together:
 `VauE.Term` has constructors for primitive data, primitive operatives (`$vau`, `$wrap`, `$unwrap`,
-`$eval`, `$list*`), symbols, `#ignore`, `()`, environments (`env e`), compound operatives
-`oper ptree eparm body senv`, pairs, applicatives, `eval t e` and `comb t1 t2 e`. `VauE.Env` is
+`$eval`, `$list*`, and the encapsulation primitives), symbols, `#ignore`, `()`, environments
+(`env e`), compound operatives `oper ptree eparm body senv`, pairs, applicatives, `eval t e`,
+`comb t1 t2 e`, and capsules (this project's addition). `VauE.Env` is
 `List (Prod Nat Term)`: a list of bindings `(s, t)`.
 
 - `Env.lookup s e`: the term bound to `s` by the **first** binding of `s` in `e`.

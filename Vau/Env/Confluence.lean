@@ -15,8 +15,9 @@ and the argument list of `$list*`.
 
 **Scope.** This is a direct proof for the rules of this formalization: Shutt's general schemata
 (9.7), his delta-rules (9.12) for `$vau`, `$wrap`, `$unwrap`, and this project's delta-rules for
-`$eval` and `$list*`, with environments as unsorted lists. It does **not** formalize Shutt's regular
-substitutive reduction systems (thesis chapter 13), and it does not cover other delta-rules.
+`$eval`, `$list*` and the encapsulation primitives `$encap k`, `$isEncap k`, `$decap k`, with
+environments as unsorted lists. It does **not** formalize Shutt's regular substitutive reduction
+systems (thesis chapter 13), and it does not cover any other delta-rules.
 -/
 
 namespace VauE

@@ -195,5 +195,40 @@ Self-check by the drafting session; no separate agent audited this step.
 | `VauE.actor_sound` | every run is a vau-e reduction of the read-back terms | honest; completeness (every vau-e result has an actor run) is not claimed. |
 | `VauE.fork_interleave`, `VauE.actor_example` | both orders of two fork deliveries; a full run of `(f 5 6)` | show that the concurrency is real and the hypotheses can be met. |
 
-Earlier text said "we know of no published confluence proof for such an actor layer". That remains
-true of published work; this repository now has a proof for its own model, and the node says so.
+Earlier text said "we know of no published confluence proof for such an actor layer". We still found
+no published confluence proof for such an actor layer; this repository now has a proof for its own
+model, and the node says so.
+
+## Independent audit of Steps 5-8
+
+A separate AI agent (Claude) audited Steps 5 to 8 (vau-e confluence, opacity and hygiene,
+encapsulation types, actor layer), read-only, against the Lean, the thesis text and Schumacher's
+posts. It did not see the drafting session's conclusions. No person has reviewed this audit. Its
+findings and the fixes:
+
+| # | severity | finding | fix |
+|---|---|---|---|
+| 1 | high | `fork_interleave` stated the same run twice, so it did not show both orders. | Lean statement changed: both paths (left then right, right then left) are stated and proved. |
+| 2 | high | `capsule_opacity` was described as proving Kernel's module promise; its hypothesis forbids `$decap k` everywhere, including in exported accessors. | Text now says it proves a weaker form; a caveat says the module idiom (7.18) is not covered. |
+| 3 | high | README disclaimer said the Lean covers vau-x only. | Corrected. |
+| 4 | high | Review page said nothing beyond vau-x is formalized. | Corrected. |
+| 5 | medium | "one answer in every interleaving" overstated `actor_determinate`, which is about runs that reply primitive data. | Reworded in the Start node and the lead. |
+| 6 | medium | Undisclosed actor-model differences: applicatives self-evaluate in Schumacher's posts; his language has environment mutation; his parameter matching is concurrent. | Added to the model caveat and the Lean header. |
+| 7 | low | "Implementing Actors in Kernel" was cited for the evaluator; it implements actors in Kernel instead. | Citation removed from those places. |
+| 8 | medium | This file stated "no published proof" as a fact. | Reworded as our finding. |
+| 9 | medium | Environment opacity was attributed to Shutt's chapter 5 tactic, which is about ancestors and mutation. | Text now cites chapter 15 and says the chapter 5 tactic is not modeled; `env_opacity` is described as a fidelity result for list environments. |
+| 10 | medium | The lead and a caveat said "no program can tell apart" without the observation. | "(observing reduction to data)" added. |
+| 11 | medium | About page listed only two project delta-rules. | Encapsulation rules and the actor model added; stale heading fixed. |
+| 12, 13 | low | Stale counts ("four headlines", "A fifth headline"); a claim that every hypothesis is in the table. | Fixed. |
+| 14, 15 | low | Encapsulation rules and `capsule` missing from several rule and constructor lists. | Added. |
+| 16 | low | Stale Lean docstrings (Syntax, Reduction, Confluence scope). | Updated. |
+| 17 | low | Trust said `Quot.sound` comes from substitution lemmas, which vau-e lacks. | Reworded. |
+| 18 | low | README Status headed the Step 5-8 table "Step 4". | Fixed. |
+| 19 | low | "behave, for every program, like Shutt's sorted ones" overstated `env_opacity`. | Reworded. |
+| 20 | low | Capsules are plain terms, unlike Kernel's freshly allocated objects. | Caveat added. |
+
+The agent found accurate: all quoted Lean statements and Lean names; all quiz keys in the
+opacity, encapsulation and actor nodes; the section 7.2 description (including that `p?` takes zero
+or more arguments); Schumacher's `k_comb`, `#comb`, fork/join `#map` and `#lookup` forwarding; the
+disclosures of numbered types, `#t`/`#f` as data, observation by reduction to data; the counts of
+headlines and files; consistency of the axiom lists; and ASCII-only text.

@@ -59,8 +59,8 @@ Output of `lake env lean scripts/Axioms.lean`:
 'VauE.actor_example' depends on axioms: [propext]
 ```
 
-`propext` and `Quot.sound` are standard axioms of Lean's core logic. `Quot.sound` comes from function
-extensionality, used in the substitution lemmas. No result uses `Classical.choice` or `sorryAx`.
+`propext` and `Quot.sound` are standard axioms of Lean's core logic. `Quot.sound` enters through function extensionality and `simp` lemmas (in vau-x mainly the
+substitution lemmas). No result uses `Classical.choice` or `sorryAx`.
 
 ## What the Lean does and does not cover
 

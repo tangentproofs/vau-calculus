@@ -19,6 +19,9 @@ calculus, with this project's names:
 | delta-unwrap| `[combine $unwrap (<applicative V1>) e] -> V1`                          | (9.12)   |
 | delta-eval  | `[combine $eval (V1 e1) e] -> [eval V1 e1]`                             | this project |
 | delta-list* | `[combine $list* (V1 ... Vn) e] -> (V1 ... Vn-1 . Vn)`                  | this project |
+| delta-encap | `[combine $encap_k (V) e] -> <capsule k V>`                             | this project |
+| delta-isEncap | `[combine $isEncap_k (V1 ... Vn) e] -> #t or #f` (as `dat 1`, `dat 0`) | this project |
+| delta-decap | `[combine $decap_k (<capsule k V>) e] -> V`                             | this project |
 
 In (9.7a) the thesis text prints `[eval <applicative T>]` without its environment operand; we
 read it as `[eval <applicative T> e] -> <applicative [eval T e]>`.

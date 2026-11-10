@@ -5,7 +5,7 @@ calculi for reasoning about **fexprs**: first-class Lisp combiners that receive 
 unevaluated. Shutt developed it in his PhD thesis (Worcester Polytechnic Institute, 2010) and used it as
 the basis of the Kernel programming language.
 
-## What is here now (Step 4)
+## What is here now (Step 8)
 
 - [Start here](#/start): the headline statements, then every definition they use, simplest first.
 - The [Start](#/node/Start) node explains why evaluation must be explicit.
@@ -35,8 +35,9 @@ the basis of the Kernel programming language.
 
 The Lean does **not** formalize Shutt's general framework of regular substitutive reduction systems
 (thesis chapter 13). Confluence is proved directly for both vau-x and vau-e. The vau-x results are about the concrete
-vau-x rules with no delta-rules. The vau-e results use unsorted environments and two delta-rules
-(`$eval`, `$list*`) written by this project. Some definitions are this project's own choice (the evaluator, the notion of
+vau-x rules with no delta-rules. The vau-e results use unsorted environments, two delta-rules (`$eval`,
+`$list*`) written by this project, and this project's encapsulation types (a `capsule` term and rules
+for `$encap k`, `$isEncap k`, `$decap k`). The actor layer is this project's model of Schumacher's design. Some definitions are this project's own choice (the evaluator, the notion of
 observation); their nodes say so. The [Trust](#/trust) page lists the `sorry` and axiom counts and the
 `#print axioms` output.
 

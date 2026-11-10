@@ -12,7 +12,8 @@ https://tangentproofs.github.io/vau-calculus/vau/).
 > model drafted the explanations and the Lean. They may contain mistakes. The
 > cited papers and posts are the ground truth for the theory. The Lean in this
 > repository is the ground truth for what this project proves. It covers the
-> pure vau-x calculus only. Do not treat a planned node as a proved theorem.
+> pure vau-x calculus and a model of vau-e with this project's additions.
+> Do not treat a planned node as a proved theorem.
 
 ## Sources
 
@@ -68,7 +69,8 @@ form of the lambda map are this project's choices. The site nodes and
 `VAU_AUDIT.md` say where each statement goes beyond, or falls short of, the
 thesis.
 
-- Step 4 (environments): a Lean model of Shutt's vau-e calculus in
+- Steps 4 to 8 (environments, confluence of vau-e, opacity and hygiene,
+  encapsulation types, actor layer): a Lean model of Shutt's vau-e calculus in
   `Vau/Env/` (namespace `VauE`): symbols, environments, compound
   operatives, the rules (9.7) and the delta-rules (9.12) for `$vau`,
   `$wrap`, `$unwrap`, plus this project's rules for `$eval` and `$list*`.
@@ -77,7 +79,7 @@ thesis.
 | theorem | file | statement, in words |
 |---|---|---|
 | `VauE.actor_determinate` | `Vau/Env/Actors.lean` | in a model of Schumacher's actor evaluator with concurrent operand evaluation, any two runs that reply primitive data reply the same data |
-| `VauE.capsule_opacity` | `Vau/Env/Encapsulation.lean` | a program without the decapsulator of an encapsulation type cannot observe the content of an object of that type |
+| `VauE.capsule_opacity` | `Vau/Env/Encapsulation.lean` | a program that does not contain the decapsulator of an encapsulation type (anywhere, including in exported accessors) cannot observe the content of an object of that type |
 | `VauE.env_opacity` | `Vau/Env/Opacity.lean` | two environments with the same lookups cannot be told apart by any program (observing reduction to primitive data); so binding order and shadowed bindings are invisible |
 | `VauE.confluence` | `Vau/Env/Confluence.lean` | if `t ->* s1` and `t ->* s2` in vau-e, then `s1` and `s2` have a common reduct |
 | `VauE.derived_lambda` | `Vau/Env/Lambda.lean` | with Shutt's definition (4.10) of `$lambda` from `$vau`, `wrap`, `eval` and `list*`, `(($lambda p b) . args)` evaluated in `e` reduces to `b` evaluated in `e` extended with `p` bound to the evaluated arguments |

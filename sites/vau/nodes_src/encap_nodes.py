@@ -9,7 +9,9 @@ OURS = ("Shutt's thesis gives no calculus rules for encapsulation types. The ter
         "`make-encapsulation-type` (thesis section 7.2).")
 FRESH = ("Kernel's `make-encapsulation-type` makes a fresh type on each call, which needs state. Pure vau-e "
          "has no state, so types are numbered here, as if each type `k` had been made once. `#t` and `#f` "
-         "are represented by the data `1` and `0`.")
+         "are represented by the data `1` and `0`. Kernel's encapsulations are freshly allocated objects; here "
+         "`capsule k v` is a plain term, so two capsules with the same type and content are the same term (pure vau-e "
+         "has no `eq?`, so this cannot be observed).")
 
 
 def L(s):
@@ -17,8 +19,8 @@ def L(s):
 
 
 node("VauE.capsule_opacity",
-     "Encapsulation: without the decapsulator, the content is hidden",
-     "Put an encapsulated object of type `k` into any program that holds no decapsulator of type `k`. "
+     "Encapsulation: a program without the decapsulator cannot see the content",
+     "Put an encapsulated object of type `k` into any program that does not contain the decapsulator of type `k`. "
      "Then no observation depends on the content: replacing the content changes nothing the program can see.",
      L("""
 ## Plain English
@@ -31,7 +33,10 @@ Kernel lets a program create a new abstract data type at run time ([thesis secti
 - a **decapsulator** `d`: it takes an object made by `e` and returns its content.
 
 The content can be read **only** through `d`. If a module keeps `d` private and exports only safe
-operations, nobody else can read the content. This theorem proves that promise, in the Lean vau-e.
+operations, nobody else can read the content. This theorem proves a **weaker** form of that promise, in
+the Lean vau-e: a program that does not contain `$decap k` at all cannot observe the content. A module
+that exports accessors built from `d` (Kernel's idiom (7.18)) is not covered, because those accessors
+contain `d`.
 
 ## The model
 
@@ -54,7 +59,7 @@ theorem capsule_opacity {k n : Nat} {v v' : Term} (c : Ctx) (hc : Clean k (c.plu
 ```
 
 [Clean](#/node/VauE.Clean) `k t` says that `t` holds no `$decap k`, except inside capsules of type `k`.
-So: in any context `c` without the decapsulator, the program reaches the number `n` with content `v`
+So: in any context `c` that does not contain the decapsulator, the program reaches the number `n` with content `v`
 exactly when it does with any other content `v'`. The program may hold the encapsulator and the type
 predicate, and may make, copy and test capsules as much as it likes.
 
@@ -80,6 +85,7 @@ of type `k`, so the program stays clean.
         ["Yes", "No: types are numbered, because pure vau-e has no state", "Only for two types", "Yes, with a counter"],
         1, "This is disclosed on the node.")],
      caveats=[OURS, FRESH,
+              "The hypothesis forbids `$decap k` anywhere in the program (outside capsules of type `k`), including inside exported accessors. So the usual Kernel idiom, a module that keeps `d` private but exports operations built from it, is not covered.",
               "The observation is reduction to primitive data, as for environment opacity.",
               "`VauE.confluence` and `VauE.env_opacity` were re-proved for the calculus with these rules.",
               "`#print axioms VauE.capsule_opacity` reports `propext` and `Quot.sound`."])

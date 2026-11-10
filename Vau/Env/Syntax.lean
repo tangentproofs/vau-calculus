@@ -9,6 +9,7 @@ This follows Shutt's vau-e calculus (PhD thesis, WPI 2010, section 9.1, (9.1) an
 S ::= d | o | e | #ignore | () | <operative T T T T>     (self-evaluating terms)
 A ::= [eval T T] | [combine T T T]                      (active terms)
 T ::= S | s | (T . T) | <applicative T> | A              (terms)
+      | <capsule k T>                                    (this project's addition)
 e ::= <<B*>>,  B ::= s <- T                              (environments)
 V  =  terms whose every active subterm is within an operative or environment   (values)
 ```
@@ -21,9 +22,11 @@ Representation choices (this project's, not Shutt's):
   `join` is list append and `lookup` takes the first binding. The two agree on every lookup, but
   two environments that list the same bindings in a different order are different terms here,
   so this equational theory is weaker than Shutt's.
-* Primitive operatives are the five named in `Prim`. `$vau`, `$wrap` and `$unwrap` have Shutt's
+* Primitive operatives are the ones named in `Prim`. `$vau`, `$wrap` and `$unwrap` have Shutt's
   delta-rules (9.12). `$eval` and `$list*` have delta-rules written by this project (Shutt uses
   them in (4.20)-(4.22) and calls their rules self-evident).
+* Encapsulation types are this project's addition: the term `capsule k v` and the primitives
+  `$encap k`, `$isEncap k`, `$decap k` (see `Vau/Env/Encapsulation.lean`).
 -/
 
 namespace VauE

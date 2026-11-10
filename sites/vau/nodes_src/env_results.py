@@ -8,7 +8,7 @@ node = make(NODES)
 ENV = ("The Lean environments are unsorted lists with first-binding lookup. Shutt's are sorted with no "
        "symbol bound twice. Lookup agrees with Shutt's lookup on the normalized environment, but Lean environments may hold "
        "shadowed duplicate bindings, which Shutt's grammar forbids, and equality of environment terms is weaker (see VauE.Env). "
-       "`VauE.env_opacity` shows that no program can observe the order or the shadowed bindings.")
+       "`VauE.env_opacity` shows that no program can observe the order or the shadowed bindings (observing reduction to primitive data).")
 OURS = ("`$eval` and `$list*` have delta-rules written by this project. Shutt uses them in thesis "
         "(4.20)-(4.22) and calls their rules self-evident; he gives rules (9.12) only for `$vau`, `$wrap` "
         "and `$unwrap`.")
@@ -163,7 +163,7 @@ joined again.
 node("VauE.Term",
      "Terms of vau-e",
      "A vau-e term is primitive data, a primitive operative, a symbol, `#ignore`, `()`, an environment, a "
-     "compound operative, a pair, an applicative, `[eval T e]` or `[combine T1 T2 e]`.",
+     "compound operative, a pair, an applicative, `[eval T e]`, `[combine T1 T2 e]`, or (this project's addition) a capsule.",
      L("""
 ## Plain English
 
@@ -214,9 +214,9 @@ in [Top](#/node/VauE.Top).
      [q("What is the applicative `wrap` in the Lean?",
         ["A primitive", "`app (prim .wrap)`, the wrapped operative `$wrap`", "A compound operative", "A symbol"],
         1, "See `wrapA`."),
-      q("Which primitives have rules written by this project, not Shutt?",
+      q("Which of these primitives have rules written by this project, not Shutt?",
         ["`$vau` and `$wrap`", "`$eval` and `$list*`", "`$unwrap`", "None"],
-        1, "Shutt uses them in his trace but leaves their rules out as self-evident."),
+        1, "Shutt uses them in his trace but leaves their rules out as self-evident. The encapsulation primitives are also this project's."),
       q("Does the Lean have `$define!`?",
         ["Yes", "No: pure vau-e has no mutation", "Only for `$lambda`", "Only at top level"],
         1, "`$lambda` is bound in an environment by hypothesis instead.")],
@@ -347,8 +347,8 @@ it joins the two halves' bindings if both match and the halves share no symbol
 
 node("VauE.SelfEval",
      "Self-evaluating terms in vau-e",
-     "Primitive data, primitive operatives, environments, `#ignore`, `()` and compound operatives evaluate to "
-     "themselves (rule eval-self).",
+     "Primitive data, primitive operatives, environments, `#ignore`, `()`, compound operatives and capsules "
+     "evaluate to themselves (rule eval-self).",
      """
 ## Plain English
 
@@ -383,7 +383,8 @@ has no active subterm.
 ## In the Lean
 
 `VauE.IsValue` has constructors for `dat`, `prim`, `sym`, `ign`, `nil`, `env e` (any bindings),
-`oper` (any parts), `capsule` (any content), `pair` of values and `app` of a value.
+`oper` (any parts), `capsule` (any content; this is this project's choice, like Shutt's choice for
+environments), `pair` of values and `app` of a value.
 """,
      [q("Is a symbol a value?",
         ["Yes", "No", "Only if bound", "Only in vau-x"],
@@ -525,7 +526,7 @@ contexts (9.5) reach every subterm position, including bindings inside an enviro
 ## In the Lean
 
 `VauE.Step` has `top`, `envHere` and `envThere` (a step inside a binding), and congruences for every
-part of `oper`, `pair`, `app`, `eval` and `comb`. [Steps](#/node/VauE.Steps) is zero or more steps.
+part of `oper`, `pair`, `app`, `eval`, `comb` and `capsule`. [Steps](#/node/VauE.Steps) is zero or more steps.
 """,
      [q("Can a step happen inside a binding of an environment?",
         ["No", "Yes: `envHere` and `envThere`", "Only the first binding", "Only in vau-x"],
@@ -776,7 +777,7 @@ what each rule looks at:
 `Par.to_cd` (every parallel step from `t` can be completed to `cd t`) then gives the diamond property.
 """),
      [q("Which rules does `VauE.confluence` cover?",
-        ["All of Kernel", "This formalization's vau-e rules: (9.7), (9.12) and the project's `$eval` and `$list*` rules", "Only the general schemata (9.7)", "Only vau-x"],
+        ["All of Kernel", "This formalization's vau-e rules: (9.7), (9.12) and the project's `$eval`, `$list*` and encapsulation rules", "Only the general schemata (9.7)", "Only vau-x"],
         1, "Other delta-rules would need their own check."),
       q("What replaces the substitution lemma of the vau-x proof?",
         ["Nothing is needed", "Lemmas that parallel steps keep lookups, matches, lists and values", "A typing lemma", "Shutt's Theorem 13.104"],

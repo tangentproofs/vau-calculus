@@ -18,10 +18,12 @@ node("VauE.env_opacity",
 ## Plain English
 
 **Hygiene** means that a binding affects only the part of the program where it is written. Shutt spends
-[thesis chapter 5](%T#page=101) on how Kernel keeps fexprs hygienic. One of his tactics is that
-**environments are encapsulated**: a program can evaluate a symbol in an environment, but it cannot list
-the bindings or take the environment apart. In chapter 15 he names this as one reason why his fexprs do
-not make the theory trivial.
+[thesis chapter 5](%T#page=101) on how Kernel keeps fexprs hygienic. There, the environment type is
+encapsulated so that a program cannot find the ancestors of an environment, and can change only an
+environment it holds directly. vau-e has no ancestors and no mutation, so that tactic is **not**
+formalized here. In chapter 15 Shutt notes the related fact that matters for vau-e: a fexpr cannot take
+apart an environment (or a compound operative), and he names this as one reason why his fexprs do not
+make the theory trivial.
 
 This theorem makes the claim precise for vau-e: the only thing a program can learn about an environment
 is the answer to lookups.
@@ -42,9 +44,10 @@ Two corollaries:
   hidden behind an earlier binding of the same symbol is invisible.
 - `order_invisible`: the order of bindings of different symbols is invisible.
 
-So the Lean's unsorted environments behave, for every program, like Shutt's sorted ones with no symbol
-bound twice. (Their equational theory is still weaker: the theorem is about observations, not about
-equality of terms.) And `lookup_observable` checks the other side: `{{x <- 5}}` and `{{x <- 6}}` **can**
+In Shutt's sorted grammar, binding order and shadowed bindings do not exist, so this is mainly a fidelity
+result for the Lean's list representation: no program can observe order or shadowed bindings (by
+reduction to data). Their equational theory is still weaker: the theorem is about observations, not
+about equality of terms. And `lookup_observable` checks the other side: `{{x <- 5}}` and `{{x <- 6}}` **can**
 be told apart, by the context `[eval x _]`.
 
 Also in the file: `match_env_opaque`: a parameter tree can only bind an environment whole, or ignore
