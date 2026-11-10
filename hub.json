@@ -1,0 +1,29 @@
+{
+ "name": "Vau calculus, explained (unofficial)",
+ "baseUrl": "https://tangentproofs.github.io/vau-calculus/",
+ "repo": "tangentproofs/vau-calculus",
+ "indexLabel": "Index",
+ "indexBlurb": "the tangentproofs/vau-calculus index",
+ "storagePrefix": "tp-vau-calculus",
+ "credit": "drafted by Claude (AI), not reviewed by a person",
+ "aboutCredit": "for [the tangentproofs/vau-calculus index](../)",
+ "giscus": {
+  "repoId": "R_kgDOVo2Row",
+  "category": "Announcements",
+  "categoryId": "DIC_kwDOVo2Ro84DKxrj"
+ },
+ "page": {
+  "desc": "Unofficial, AI-drafted plain-English explainer of John N. Shutt's vau calculus, with a Lean 4 formalization planned in the same repository.",
+  "brandHtml": "vau calculus <em>explained</em>",
+  "taglineHtml": "John N. Shutt's vau calculus, in <em>plain English</em>: why evaluation must be explicit, the pure vau-x syntax and its reduction rules, and a plan for a Lean&nbsp;4 formalization.",
+  "navHtml": "",
+  "notesHtml": "<div class=\"fan big-disclaimer\"><p><b>Not official documentation.</b> This site is an independent, unofficial explainer. It is not written, reviewed, endorsed or maintained by John N. Shutt, by Dale Schumacher, by Mitchell Wand, or by any author of the cited sources. An AI model (Claude) drafted the explanations, and no person has reviewed them. They may contain mistakes. The cited thesis, talk and posts are the ground truth for the theory. When Lean exists in this repository, the Lean is the ground truth for what this project proves.</p><p>The code and text in this repository are under the MIT License. The cited works keep their own copyright; this site quotes only short, attributed phrases from them.</p></div>",
+  "projectsHeading": "Explainers",
+  "talkLabel": "talk",
+  "talkDefaultUrl": "",
+  "othersHeading": "Others",
+  "othersIntro": "",
+  "suggestHtml": "<p class=\"optout\">Corrections or questions: <a href=\"https://github.com/tangentproofs/vau-calculus/issues\">open an issue</a> or use the comments on any node.</p>",
+  "footerHtml": "Unofficial. Not affiliated with or reviewed by the authors of the cited works."
+ }
+}

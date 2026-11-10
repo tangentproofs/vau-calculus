@@ -1,0 +1,26 @@
+{
+ "projects": [
+  {
+   "slug": "vau",
+   "name": "Vau calculus (vau-x)",
+   "kind": "theory",
+   "own": true,
+   "repo": "tangentproofs/vau-calculus",
+   "members": [
+    {
+     "name": "John N. Shutt (theory)",
+     "profile": "https://web.cs.wpi.edu/~jshutt/"
+    }
+   ],
+   "authors": "John N. Shutt (theory); explanations drafted by Claude (AI) in this repository",
+   "talk": null,
+   "talkUrl": null,
+   "license": "MIT (this repository)",
+   "url": "https://web.cs.wpi.edu/~jshutt/dissertation/etd-090110-124904-Shutt-Dissertation.pdf",
+   "description": "What vau calculus is: explicit evaluation, the pure vau-x syntax and its reduction rules. A Lean 4 formalization is planned.",
+   "explainer": true,
+   "nodeCount": 7
+  }
+ ],
+ "others": []
+}
