@@ -13,6 +13,7 @@ claim it is named for. The claim-by-claim honesty audit is `VAU_AUDIT.md` in the
 | [conservative_extension](#/node/conservative_extension) | `LConv M N <-> Conv (embed M) (embed N)` | thesis 15.4, map (15.28), informal | vau-x form of the map; call-by-value lambda. Shutt describes the image as the full lambda calculus; for vau-x the Lean shows it is lambda-v (see the embed node) |
 | [confluence](#/node/confluence) | `Steps t s1 -> Steps t s2 -> exists u, Steps s1 u /\ Steps s2 u` | thesis 14.1.4 with Theorem 13.104 (Church-Rosser of vau-x) | direct proof; no delta-rules; no SRS framework |
 | [nontrivial](#/node/nontrivial) | `Not (eval (dat 5) = dat 5) /\ CtxEquiv (eval (dat 5)) (dat 5) /\ Not (CtxEquiv (dat 5) (dat 6))` | the point of thesis chapter 15 against Wand (1998) | the observation in `CtxEquiv` |
+| [VauE.capsule_opacity](#/node/VauE.capsule_opacity) | `Clean k (c.plug (capsule k v)) -> (Steps (c.plug (capsule k v)) (dat n) <-> Steps (c.plug (capsule k v')) (dat n))` | thesis section 7.2 (informal Kernel description; no calculus rules in the thesis) | the capsule term and the rules for `$encap`, `$isEncap`, `$decap`; numbered types (no fresh types); `#t`/`#f` as `dat 1`/`dat 0` |
 | [VauE.env_opacity](#/node/VauE.env_opacity) | `(forall s, lookup s bs = lookup s bs') -> (Steps (c.plug (env bs)) (dat n) <-> Steps (c.plug (env bs')) (dat n))` | thesis chapter 5 (encapsulation of environments), chapter 15 | observation is reduction to primitive data; pure vau-e, no mutation |
 | [VauE.confluence](#/node/VauE.confluence) | `Steps t s1 -> Steps t s2 -> exists u, Steps s1 u /\ Steps s2 u` (vau-e) | thesis 14.1.4 with Theorem 13.104 | direct proof; this formalization's rules (unsorted environments, `$eval`, `$list*`) |
 | [VauE.derived_lambda](#/node/VauE.derived_lambda) | `Ground e0 -> lookup $lambda e = lambdaOp e0 -> ... -> Steps (eval (($lambda p b) . args) e) (eval b (m . e))` | thesis (4.9), (4.10), traces (4.18)-(4.22) | vau-e with unsorted environments; delta-rules for `$eval`, `$list*`; one body expression |
@@ -42,7 +43,6 @@ the drafting model against the extracted text of the PDF. No person has checked 
 
 | node | source | note |
 |---|---|---|
-| [EncapsulationTypes](#/node/EncapsulationTypes) | thesis section 7.2 | later |
 | [ActorLayer](#/node/ActorLayer) | Schumacher's three posts | later; "no published confluence proof" means we found none |
 
 ## Claims this site does not make

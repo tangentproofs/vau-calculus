@@ -51,6 +51,16 @@ inductive Top : Term -> Term -> Prop where
       Top (comb (prim .eval) (list2 v (env e1)) (env e)) (eval v (env e1))
   | deltaListStar {vs r : Term} (e : Env) : IsValue vs -> buildListStar vs = some r ->
       Top (comb (prim .listStar) vs (env e)) r
+  /-- `[combine $encap_k (V) e] -> <capsule k V>` (this project's rule). -/
+  | deltaEncap {v : Term} (k : Nat) (e : Env) : IsValue v ->
+      Top (comb (prim (.encap k)) (list1 v) (env e)) (capsule k v)
+  /-- `[combine $isEncap_k (V1 ... Vn) e] -> #t` if every `Vi` is a capsule of type `k`, else
+  `#f`; `#t` and `#f` are `dat 1` and `dat 0` (this project's rule). -/
+  | deltaIsEncap {vs : Term} {b : Bool} (k : Nat) (e : Env) : IsValue vs -> capsCheck k vs = some b ->
+      Top (comb (prim (.isEncap k)) vs (env e)) (dat (if b then 1 else 0))
+  /-- `[combine $decap_k (<capsule k V>) e] -> V` (this project's rule). -/
+  | deltaDecap {v : Term} (k : Nat) (e : Env) :
+      Top (comb (prim (.decap k)) (list1 (capsule k v)) (env e)) v
 
 /-- One step: the compatible closure of `Top`. -/
 inductive Step : Term -> Term -> Prop where
@@ -71,6 +81,7 @@ inductive Step : Term -> Term -> Prop where
   | comb1 {a a' : Term} (b c : Term) : Step a a' -> Step (comb a b c) (comb a' b c)
   | comb2 (a : Term) {b b' : Term} (c : Term) : Step b b' -> Step (comb a b c) (comb a b' c)
   | comb3 (a b : Term) {c c' : Term} : Step c c' -> Step (comb a b c) (comb a b c')
+  | capsule (k : Nat) {v v' : Term} : Step v v' -> Step (capsule k v) (capsule k v')
 
 /-- Zero or more steps. -/
 abbrev Steps := Vau.Star Step

@@ -71,6 +71,7 @@ its own visible binding of that symbol (`steps_update`); if it is hidden, the ot
         ["Termination", "Reduction to primitive data `n`", "Types", "The number of steps"],
         1, "This is the observation chosen here; the node says so.")],
      caveats=[
+         "Encapsulated objects (VauE.capsule_opacity) follow the same idea for programmer-defined types.",
          "The observation is reduction to primitive data. A stronger notion (for example observing termination) is not proved here.",
          "This is opacity in pure vau-e: no mutation, no `$define!`, no first-class continuations. Kernel's other hygiene tactics (stable bindings, mutation only of local environments) are not formalized.",
          "`#print axioms VauE.env_opacity` reports `propext` and `Quot.sound`.",

@@ -74,6 +74,7 @@ inductive Sim : Term -> Term -> Prop where
   | eval {a a' b b' : Term} : Sim a a' -> Sim b b' -> Sim (eval a b) (eval a' b')
   | comb {a a' b b' c c' : Term} :
       Sim a a' -> Sim b b' -> Sim c c' -> Sim (comb a b c) (comb a' b' c')
+  | capsule (k : Nat) {v v' : Term} : Sim v v' -> Sim (capsule k v) (capsule k v')
 
 /-- Two binding lists related as by `Sim.env`. -/
 def EnvSim (bs bs' : Env) : Prop :=
@@ -105,6 +106,7 @@ theorem refl : forall t : Term, Sim t t
   | .app t => .app (refl t)
   | .eval a b => .eval (refl a) (refl b)
   | .comb a b c => .comb (refl a) (refl b) (refl c)
+  | .capsule k v => .capsule k (refl v)
 theorem reflLookup : forall (bs : Env) (s : Nat) (u : Term), Env.lookup s bs = some u -> Sim u u
   | [], _, _, h => by simp [Env.lookup] at h
   | (s', t) :: r, s, u, h => by
@@ -130,6 +132,7 @@ theorem symm {t t' : Term} (h : Sim t t') : Sim t' t := by
   | app _ ih => exact .app ih
   | eval _ _ iha ihb => exact .eval iha ihb
   | comb _ _ _ iha ihb ihc => exact .comb iha ihb ihc
+  | capsule k _ ih => exact .capsule k ih
 
 /-- Environments with the same lookups are related. -/
 theorem of_lookup_eq {bs bs' : Env} (h : forall s, Env.lookup s bs = Env.lookup s bs') :
@@ -155,6 +158,7 @@ theorem isValue {v v' : Term} (h : Sim v v') (hv : IsValue v) : IsValue v' := by
   | app _ ih => cases hv with | app ht => exact .app (ih ht)
   | eval => cases hv
   | comb => cases hv
+  | capsule => exact .capsule _ _
 
 theorem selfEval {t t' : Term} (h : Sim t t') (hs : SelfEval t) : SelfEval t' := by
   cases hs <;> cases h <;> constructor
@@ -214,6 +218,7 @@ theorem syms_eq : forall {p p' : Term}, Sim p p' -> syms p' = syms p
   | .app _, _, h => by cases h; rfl
   | .eval _ _, _, h => by cases h; rfl
   | .comb _ _ _, _, h => by cases h; rfl
+  | .capsule _ _, _, h => by cases h; rfl
 
 theorem ematch : forall {p p' t t' : Term} {m : Env}, VauE.ematch p t = some m -> Sim p p' ->
     Sim t t' -> exists m', VauE.ematch p' t' = some m' /\ EnvSim m m'
@@ -267,6 +272,7 @@ theorem ematch : forall {p p' t t' : Term} {m : Env}, VauE.ematch p t = some m -
   | .app _, _, _, _, _, hm, _, _ => by simp [VauE.ematch] at hm
   | .eval _ _, _, _, _, _, hm, _, _ => by simp [VauE.ematch] at hm
   | .comb _ _ _, _, _, _, _, hm, _, _ => by simp [VauE.ematch] at hm
+  | .capsule _ _, _, _, _, _, hm, _, _ => by simp [VauE.ematch] at hm
 
 theorem buildListStar : forall {x x' r : Term}, VauE.buildListStar x = some r -> Sim x x' ->
     exists r', VauE.buildListStar x' = some r' /\ Sim r r'
@@ -296,6 +302,31 @@ theorem buildListStar : forall {x x' r : Term}, VauE.buildListStar x = some r ->
   | .app _, _, _, hb, _ => by simp [VauE.buildListStar] at hb
   | .eval _ _, _, _, hb, _ => by simp [VauE.buildListStar] at hb
   | .comb _ _ _, _, _, hb, _ => by simp [VauE.buildListStar] at hb
+  | .capsule _ _, _, _, hb, _ => by simp [VauE.buildListStar] at hb
+
+theorem isCapsuleOf_eq {k : Nat} {x x' : Term} (h : Sim x x') : isCapsuleOf k x' = isCapsuleOf k x := by
+  cases h <;> rfl
+
+theorem capsCheck : forall {k : Nat} {vs vs' : Term} {b : Bool}, VauE.capsCheck k vs = some b ->
+    Sim vs vs' -> VauE.capsCheck k vs' = some b
+  | _, .nil, _, _, hc, h => by cases h; exact hc
+  | k, .pair x rest, _, _, hc, h => by
+    cases h with
+    | pair h1 h2 =>
+      simp only [VauE.capsCheck, Option.map_eq_some_iff] at hc
+      exact hc.elim fun b0 hb0 => by
+        simp only [VauE.capsCheck, capsCheck hb0.1 h2, Option.map_some, isCapsuleOf_eq h1]
+        exact congrArg some hb0.2
+  | _, .dat _, _, _, hc, _ => by simp [VauE.capsCheck] at hc
+  | _, .prim _, _, _, hc, _ => by simp [VauE.capsCheck] at hc
+  | _, .sym _, _, _, hc, _ => by simp [VauE.capsCheck] at hc
+  | _, .ign, _, _, hc, _ => by simp [VauE.capsCheck] at hc
+  | _, .env _, _, _, hc, _ => by simp [VauE.capsCheck] at hc
+  | _, .oper _ _ _ _, _, _, hc, _ => by simp [VauE.capsCheck] at hc
+  | _, .app _, _, _, hc, _ => by simp [VauE.capsCheck] at hc
+  | _, .eval _ _, _, _, hc, _ => by simp [VauE.capsCheck] at hc
+  | _, .comb _ _ _, _, _, hc, _ => by simp [VauE.capsCheck] at hc
+  | _, .capsule _ _, _, _, hc, _ => by simp [VauE.capsCheck] at hc
 
 end Sim
 
@@ -455,6 +486,33 @@ theorem sim_top {t u t' : Term} (h : Top t u) (hs : Sim t t') :
       cases he
       exact (Sim.buildListStar hr hx).elim fun r' hr' =>
         Exists.intro r' (And.intro (Steps.top (.deltaListStar _ (hx.isValue hv) hr'.1)) hr'.2)
+  | deltaEncap k e hv =>
+    cases hs with
+    | comb hf hx he =>
+      cases hf
+      cases hx with
+      | pair h1 hr1 =>
+        cases hr1
+        cases he
+        exact Exists.intro _ (And.intro (Steps.top (.deltaEncap k _ (h1.isValue hv))) (.capsule k h1))
+  | deltaIsEncap k e hv hc =>
+    cases hs with
+    | comb hf hx he =>
+      cases hf
+      cases he
+      exact Exists.intro _ (And.intro
+        (Steps.top (.deltaIsEncap k _ (hx.isValue hv) (Sim.capsCheck hc hx))) (.dat _))
+  | deltaDecap k e =>
+    cases hs with
+    | comb hf hx he =>
+      cases hf
+      cases hx with
+      | pair h1 hr1 =>
+        cases hr1
+        cases h1 with
+        | capsule _ h2 =>
+          cases he
+          exact Exists.intro _ (And.intro (Steps.top (.deltaDecap k _)) h2)
 
 /-- A step inside one binding of a related environment. -/
 theorem env_sim_step {pre post : Env} {s : Nat} {a a1 t' : Term}
@@ -593,6 +651,12 @@ theorem sim_step {t u : Term} (h : Step t u) :
     | comb ha hb hc =>
       exact (ih.1 _ hc).elim fun c1 h1 => Exists.intro _
         (And.intro (Steps.comb3 (Steps.refl _) (Steps.refl _) h1.1) (.comb ha hb h1.2))
+  | capsule k _ ih =>
+    refine And.intro (fun t' ht => ?_) (fun l l1 e1 _ => by cases e1)
+    cases ht with
+    | capsule _ hv =>
+      exact (ih.1 _ hv).elim fun v1 h1 => Exists.intro _
+        (And.intro (Steps.capsule h1.1) (.capsule k h1.2))
 
 /-- Every reduction of `t` is matched by a reduction of any related `t'`. -/
 theorem Sim.steps {t t' u : Term} (hs : Sim t t') (h : Steps t u) :
@@ -622,6 +686,7 @@ inductive Ctx where
   | comb1 : Ctx -> Term -> Term -> Ctx
   | comb2 : Term -> Ctx -> Term -> Ctx
   | comb3 : Term -> Term -> Ctx -> Ctx
+  | capsule : Nat -> Ctx -> Ctx
 
 /-- Put a term into the hole. Plugging does not rename anything. -/
 def Ctx.plug : Ctx -> Term -> Term
@@ -639,6 +704,7 @@ def Ctx.plug : Ctx -> Term -> Term
   | .comb1 c b c', t => Term.comb (c.plug t) b c'
   | .comb2 a c c', t => Term.comb a (c.plug t) c'
   | .comb3 a b c, t => Term.comb a b (c.plug t)
+  | .capsule k c, t => Term.capsule k (c.plug t)
 
 theorem Sim.envAt {pre post : Env} {s : Nat} {y y' : Term} (h : Sim y y') :
     Sim (Term.env (pre ++ (s, y) :: post)) (Term.env (pre ++ (s, y') :: post)) := by
@@ -681,6 +747,7 @@ theorem Sim.plug (c : Ctx) {t t' : Term} (h : Sim t t') : Sim (c.plug t) (c.plug
   | comb1 c b c' ih => exact .comb ih (Sim.refl _) (Sim.refl _)
   | comb2 a c c' ih => exact .comb (Sim.refl _) ih (Sim.refl _)
   | comb3 a b c ih => exact .comb (Sim.refl _) (Sim.refl _) ih
+  | capsule k c ih => exact .capsule k ih
 
 /-! ## Environment opacity -/
 

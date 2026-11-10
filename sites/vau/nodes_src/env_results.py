@@ -180,8 +180,9 @@ This is Shutt's grammar (9.1) ([thesis section 9.1](%T#page=195)). Compared with
 
 `VauE.Term` has one constructor per form: `dat`, `prim` (one of the [primitives](#/node/VauE.Prim)),
 `sym`, `ign`, `nil`, `env` (a list of bindings, see [Env](#/node/VauE.Env)), `oper`, `pair`, `app`,
-`eval`, `comb`. Symbols are numbers; the `$lambda` file names the ones it uses with notations such as
-`sLambda` (the number 4).
+`eval`, `comb`, and `capsule k v` (an encapsulated object of type `k`; this project's addition for
+[encapsulation types](#/node/VauE.capsule_opacity)). Symbols are numbers; the `$lambda` file names the
+ones it uses with notations such as `sLambda` (the number 4).
 """),
      [q("Which of these is new in vau-e compared with vau-x?",
         ["Pairs", "Symbols and environments", "Applicatives", "`[eval T]`"],
@@ -192,11 +193,11 @@ This is Shutt's grammar (9.1) ([thesis section 9.1](%T#page=195)). Compared with
       q("What is `[combine T1 T2 e]`?",
         ["A pair", "A call of combiner `T1` on operands `T2`, from environment `e`", "An environment", "A symbol lookup"],
         1, "The third part is the caller's (dynamic) environment.")],
-     caveats=["Symbols and primitive data are numbers in the Lean. Primitive operatives are the five in `Prim`."])
+     caveats=["Symbols and primitive data are numbers in the Lean. Primitive operatives are the ones in `Prim`. The `capsule` term is not in Shutt's grammar; it models Kernel's encapsulated objects."])
 
 node("VauE.Prim",
      "Primitive operatives of the Lean vau-e",
-     "Five primitive operatives: `$vau`, `$wrap`, `$unwrap`, `$eval` and `$list*`. For a standard applicative "
+     "`$vau`, `$wrap`, `$unwrap`, `$eval`, `$list*`, and for each encapsulation type `k`: `$encap k`, `$isEncap k`, `$decap k`. For a standard applicative "
      "`foo`, `$foo` is its underlying operative: `foo = <applicative $foo>`.",
      """
 ## Plain English
@@ -206,8 +207,9 @@ the applicatives `eval` and `list*`, so the Lean adds their underlying operative
 
 ## In the Lean
 
-`VauE.Prim` has constructors `vau`, `wrap`, `unwrap`, `eval`, `listStar`. Their rules are in
-[Top](#/node/VauE.Top).
+`VauE.Prim` has constructors `vau`, `wrap`, `unwrap`, `eval`, `listStar`, and `encap k`, `isEncap k`,
+`decap k` for encapsulation types (see [capsule_opacity](#/node/VauE.capsule_opacity)). Their rules are
+in [Top](#/node/VauE.Top).
 """,
      [q("What is the applicative `wrap` in the Lean?",
         ["A primitive", "`app (prim .wrap)`, the wrapped operative `$wrap`", "A compound operative", "A symbol"],
@@ -355,7 +357,7 @@ Shutt's set `S` (9.1). Symbols are not self-evaluating (they are looked up), and
 
 ## In the Lean
 
-`VauE.SelfEval` has six constructors: `dat`, `prim`, `env`, `ign`, `nil`, `oper`.
+`VauE.SelfEval` has seven constructors: `dat`, `prim`, `env`, `ign`, `nil`, `oper`, `capsule`.
 """,
      [q("Is a symbol self-evaluating?",
         ["Yes", "No: it is looked up (eval-sym)", "Only if bound", "Only `$vau`"],
@@ -381,7 +383,7 @@ has no active subterm.
 ## In the Lean
 
 `VauE.IsValue` has constructors for `dat`, `prim`, `sym`, `ign`, `nil`, `env e` (any bindings),
-`oper` (any parts), `pair` of values and `app` of a value.
+`oper` (any parts), `capsule` (any content), `pair` of values and `app` of a value.
 """,
      [q("Is a symbol a value?",
         ["Yes", "No", "Only if bound", "Only in vau-x"],
@@ -468,7 +470,7 @@ consed in front, and `none` otherwise (no arguments, or an improper list).
 node("VauE.Top",
      "The vau-e rules",
      "The general rules (9.7) of vau-e (eval-self, eval-sym, eval-pair, eval-app, beta-oper, combine-app) and "
-     "delta-rules for `$vau`, `$wrap`, `$unwrap` (Shutt's (9.12)) and `$eval`, `$list*` (this project's).",
+     "delta-rules for `$vau`, `$wrap`, `$unwrap` (Shutt's (9.12)), and `$eval`, `$list*` and encapsulation types (this project's).",
      L("""
 ## Plain English
 
@@ -485,6 +487,9 @@ node("VauE.Top",
 | delta-unwrap | `[combine $unwrap (<applicative V>) e] -> V` | (9.12) |
 | delta-eval | `[combine $eval (V e1) e] -> [eval V e1]` | this project |
 | delta-list* | `[combine $list* (V1 ... Vn) e] -> (V1 ... Vn-1 . Vn)` | this project |
+| delta-encap | `[combine $encap_k (V) e] -> <capsule k V>` | this project |
+| delta-isEncap | `[combine $isEncap_k (V1 ... Vn) e] -> #t` if all `Vi` are capsules of type `k`, else `#f` | this project |
+| delta-decap | `[combine $decap_k (<capsule k V>) e] -> V` | this project |
 
 See [thesis (9.7)](%T#page=199) and [(9.12)](%T#page=201).
 
@@ -498,9 +503,9 @@ See [thesis (9.7)](%T#page=199) and [(9.12)](%T#page=201).
       q("Must the operands of a compound operative be values?",
         ["No", "Yes: `V3` in beta-oper", "Only symbols", "Only for applicatives"],
         1, "This is eager argument evaluation."),
-      q("Which rules are this project's, not Shutt's?",
+      q("Which of these rules are this project's, not Shutt's?",
         ["delta-vau and delta-wrap", "delta-eval and delta-list*", "eval-sym", "beta-oper"],
-        1, "Shutt gives (9.12) only for `$vau`, `$wrap`, `$unwrap`.")],
+        1, "Shutt gives (9.12) only for `$vau`, `$wrap`, `$unwrap`. The encapsulation rules are also this project's.")],
      caveats=[
          "Where (9.12) writes the dynamic-environment operand as a value `V`, the Lean requires a literal environment `env e`, following Definition 9.10(4). The Lean `$eval` rule requires a value and a literal environment operand, and `$list*` requires its whole operand list to be a value.",
          "Thesis (9.7a) is printed as `[eval <applicative T>] -> <applicative [eval T]>`, without the environment operand. The Lean reads it as `[eval <applicative T> e] -> <applicative [eval T e]>`.",
@@ -750,7 +755,7 @@ theorem confluence {t s1 s2 : Term} (h1 : Steps t s1) (h2 : Steps t s2) :
 
 in namespace `VauE`, about [VauE.Steps](#/node/VauE.Steps): the rules of [VauE.Top](#/node/VauE.Top)
 (Shutt's (9.7), his delta-rules (9.12) for `$vau`, `$wrap`, `$unwrap`, and this project's delta-rules
-for `$eval` and `$list*`) in the compatible closure, including steps inside environment bindings.
+for `$eval`, `$list*` and encapsulation types) in the compatible closure, including steps inside environment bindings.
 
 Also proved: `VauE.church_rosser` (terms equal in the theory have a common reduct) and
 `VauE.normal_unique` (a term reduces to at most one normal form).

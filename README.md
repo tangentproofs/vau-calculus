@@ -75,6 +75,7 @@ thesis.
 
 | theorem | file | statement, in words |
 |---|---|---|
+| `VauE.capsule_opacity` | `Vau/Env/Encapsulation.lean` | a program without the decapsulator of an encapsulation type cannot observe the content of an object of that type |
 | `VauE.env_opacity` | `Vau/Env/Opacity.lean` | two environments with the same lookups cannot be told apart by any program (observing reduction to primitive data); so binding order and shadowed bindings are invisible |
 | `VauE.confluence` | `Vau/Env/Confluence.lean` | if `t ->* s1` and `t ->* s2` in vau-e, then `s1` and `s2` have a common reduct |
 | `VauE.derived_lambda` | `Vau/Env/Lambda.lean` | with Shutt's definition (4.10) of `$lambda` from `$vau`, `wrap`, `eval` and `list*`, `(($lambda p b) . args)` evaluated in `e` reduces to `b` evaluated in `e` extended with `p` bound to the evaluated arguments |
@@ -94,7 +95,15 @@ environment parameter `#ignore` gives the same result from any caller's
 environment) and `match_env_opaque` (a parameter tree cannot take an
 environment apart).
 
-Still planned (no Lean): encapsulation types, and the actor layer.
+Encapsulation types (`Vau/Env/Encapsulation.lean`) are this project's
+addition to vau-e: a `capsule k v` term and rules for `$encap k`,
+`$isEncap k`, `$decap k`, modeling Kernel's `make-encapsulation-type`
+(thesis section 7.2 describes it; the thesis gives no calculus rules).
+Fresh types are not modeled: types are numbered. Also proved: `decap_encap`,
+`isEncap_same`, `isEncap_other`, `decap_other_stuck`. Confluence and
+environment opacity were re-proved for the extended calculus.
+
+Still planned (no Lean): the actor layer.
 
 ## Sorry and axiom count
 
@@ -127,6 +136,12 @@ Still planned (no Lean): encapsulation types, and the actor layer.
 'VauE.match_env_opaque' depends on axioms: [propext]
 'VauE.ignore_hygiene' depends on axioms: [propext, Quot.sound]
 'VauE.lookup_observable' depends on axioms: [propext, Quot.sound]
+'VauE.decap_encap' depends on axioms: [propext]
+'VauE.isEncap_same' depends on axioms: [propext, Quot.sound]
+'VauE.isEncap_other' depends on axioms: [propext, Quot.sound]
+'VauE.decap_other_stuck' depends on axioms: [propext]
+'VauE.capsule_opacity' depends on axioms: [propext, Quot.sound]
+'VauE.capsule_observable_with_decap' depends on axioms: [propext, Quot.sound]
 ```
 
 No partial results: no theorem uses `sorry`.

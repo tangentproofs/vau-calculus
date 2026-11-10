@@ -17,44 +17,6 @@ def L(s):
             .replace("%D2", DALE_EXT).replace("%D3", DALE_ACTORS))
 
 
-# ---------------------------------------------------------------- 17. Encapsulation types (later)
-node("EncapsulationTypes",
-     "Later: encapsulation types",
-     "Kernel's `make-encapsulation-type` returns three applicatives: an encapsulator, a type predicate and "
-     "a decapsulator. Only code that holds the decapsulator can read the content. This node is planned for later.",
-     L("""
-## Plain English
-
-Kernel lets a program create a new abstract data type at run time
-([thesis section 7.2](%T#page=146)). One call, `(make-encapsulation-type)`, returns three applicatives:
-
-- an **encapsulator** `e`: it takes one value and returns a new encapsulated object that holds it;
-- a **type predicate** `p?`: it returns true iff all its arguments were made by `e`;
-- a **decapsulator** `d`: it takes an object made by `e` and returns its content.
-
-The content can be read **only** through `d`. So if a module keeps `d` private and exports only safe
-operations, nobody else can read or forge the content. The thesis uses this idiom often, inside a
-`$provide!` block.
-
-This is the same principle as [environment opacity](#/node/VauE.env_opacity): the language keeps some
-objects opaque, and that gives programmers abstraction barriers that fexprs cannot break.
-
-## What is planned
-
-Nothing for now. This node is **later**: it records the idea and where to read about it. No Lean model
-of encapsulation types is planned in the current step.
-"""),
-     [q("What does `(make-encapsulation-type)` return?",
-        ["One new object", "Three applicatives: encapsulator, type predicate, decapsulator", "A new environment", "An operative"],
-        1, "It returns a matched set of three applicatives for a new type."),
-      q("Which of the three applicatives can read an encapsulated object's content?",
-        ["The encapsulator", "The type predicate", "The decapsulator", "Any of them"],
-        2, "Only the matching decapsulator returns the content."),
-      q("Is there Lean for encapsulation types?",
-        ["Yes", "No: this node is planned for later", "Only the predicate", "Only in Humus"],
-        1, PLAN_NOTE)],
-     caveats=[PLAN_NOTE])
-
 # ---------------------------------------------------------------- 18. Actor layer (later)
 node("ActorLayer",
      "Later: an actor view of vau evaluation",

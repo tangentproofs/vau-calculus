@@ -19,7 +19,7 @@
    "url": "https://web.cs.wpi.edu/~jshutt/dissertation/etd-090110-124904-Shutt-Dissertation.pdf",
    "description": "Explicit evaluation, the pure vau-x calculus and its rules, with a Lean 4 formalization: confluence, evaluation as reduction, conservative extension of call-by-value lambda, nontrivial contextual equivalence.",
    "explainer": true,
-   "nodeCount": 76
+   "nodeCount": 82
   }
  ],
  "others": []

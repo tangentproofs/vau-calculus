@@ -42,6 +42,12 @@ the fixes below. No person has reviewed this audit.
 'VauE.match_env_opaque' depends on axioms: [propext]
 'VauE.ignore_hygiene' depends on axioms: [propext, Quot.sound]
 'VauE.lookup_observable' depends on axioms: [propext, Quot.sound]
+'VauE.decap_encap' depends on axioms: [propext]
+'VauE.isEncap_same' depends on axioms: [propext, Quot.sound]
+'VauE.isEncap_other' depends on axioms: [propext, Quot.sound]
+'VauE.decap_other_stuck' depends on axioms: [propext]
+'VauE.capsule_opacity' depends on axioms: [propext, Quot.sound]
+'VauE.capsule_observable_with_decap' depends on axioms: [propext, Quot.sound]
 ```
 
 ## Headlines: claim against Lean statement
@@ -159,3 +165,16 @@ Self-check by the drafting session; no separate agent audited this step.
 
 Not claimed: Kernel's other hygiene tactics (stable bindings, local-only mutation), mutation,
 continuations, or a stronger observation than reduction to data.
+
+## Addendum, Step 7 (encapsulation types)
+
+Self-check by the drafting session; no separate agent audited this step.
+
+| node | Lean statement | verdict |
+|---|---|---|
+| `VauE.capsule_opacity` | `Clean k (c.plug (capsule k v)) -> (Steps (c.plug (capsule k v)) (dat n) <-> Steps (c.plug (capsule k v')) (dat n))` | honest for this project's model. The model (capsule term, three rules per type, numbered types, `#t`/`#f` as data) is not from the thesis, and every node says so. `capsule_observable_with_decap` shows the hypothesis is needed. |
+| `VauE.decap_encap`, `isEncap_same`, `isEncap_other`, `decap_other_stuck` | the contract of the three applicatives | honest. |
+
+Adding the `capsule` term and the three rules changed `VauE.Term`, `VauE.Top` and `VauE.Step`, so
+`VauE.confluence` and `VauE.env_opacity` were re-proved; their nodes now name the encapsulation rules.
+Not claimed: fresh type generation, Kernel's `$provide!`, or any statement about state.

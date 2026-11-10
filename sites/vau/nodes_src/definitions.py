@@ -88,8 +88,8 @@ Shutt's vau-e calculus ([environments](#/node/VauE.Env), [`$vau`](#/node/VauE.va
 [derived_lambda](#/node/VauE.derived_lambda): Shutt's `$lambda`, defined from `$vau`, `wrap` and
 `eval`, evaluates its body with the parameters bound to the evaluated arguments, and
 `lambda_static_scope` shows that the body runs in the environment of the `$lambda` expression, not the
-caller's. Still **PLAN**:
-[EncapsulationTypes](#/node/EncapsulationTypes) and
+caller's. With encapsulation types added to vau-e, [capsule_opacity](#/node/VauE.capsule_opacity) proves that
+a program without the decapsulator cannot see the content of an encapsulated object. Still **PLAN**:
 the [ActorLayer](#/node/ActorLayer).
 
 The Lean does **not** formalize Shutt's general framework of regular substitutive reduction systems

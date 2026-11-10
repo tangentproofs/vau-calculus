@@ -27,3 +27,9 @@ import Vau
 #print axioms VauE.match_env_opaque
 #print axioms VauE.ignore_hygiene
 #print axioms VauE.lookup_observable
+#print axioms VauE.decap_encap
+#print axioms VauE.isEncap_same
+#print axioms VauE.isEncap_other
+#print axioms VauE.decap_other_stuck
+#print axioms VauE.capsule_opacity
+#print axioms VauE.capsule_observable_with_decap

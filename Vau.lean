@@ -10,3 +10,4 @@ import Vau.Env.Reduction
 import Vau.Env.Lambda
 import Vau.Env.Confluence
 import Vau.Env.Opacity
+import Vau.Env.Encapsulation

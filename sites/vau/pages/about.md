@@ -23,7 +23,10 @@ the basis of the Kernel programming language.
   [VauE.confluence](#/node/VauE.confluence).
 - Environment opacity and hygiene in vau-e: [VauE.env_opacity](#/node/VauE.env_opacity) (a headline)
   and [VauE.ignore_hygiene](#/node/VauE.ignore_hygiene).
-- Still **PLAN** (no Lean): [EncapsulationTypes](#/node/EncapsulationTypes) and the [ActorLayer](#/node/ActorLayer).
+- Encapsulation types (this project's rules for Kernel's `make-encapsulation-type`):
+  [VauE.capsule_opacity](#/node/VauE.capsule_opacity) (a headline) and
+  [VauE.decap_encap](#/node/VauE.decap_encap).
+- Still **PLAN** (no Lean): the [ActorLayer](#/node/ActorLayer).
 
 ## What the Lean does not do
 

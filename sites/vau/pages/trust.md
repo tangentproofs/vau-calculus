@@ -4,13 +4,13 @@
 
 | | now |
 |---|---|
-| Lean files | vau-x: `Vau/Syntax.lean`, `Subst.lean`, `Reduction.lean`, `Confluence.lean`, `Eval.lean`, `Lambda.lean`, `Contextual.lean`. vau-e: `Vau/Env/Syntax.lean`, `Reduction.lean`, `Lambda.lean`, `Confluence.lean`, `Opacity.lean` |
+| Lean files | vau-x: `Vau/Syntax.lean`, `Subst.lean`, `Reduction.lean`, `Confluence.lean`, `Eval.lean`, `Lambda.lean`, `Contextual.lean`. vau-e: `Vau/Env/Syntax.lean`, `Reduction.lean`, `Lambda.lean`, `Confluence.lean`, `Opacity.lean`, `Encapsulation.lean` |
 | Toolchain | `leanprover/lean4:v4.32.2` (see `lean-toolchain`), no Mathlib, no other dependency |
 | Built by this site | no. The site build never builds Lean. It reads the declarations from the source text. |
 | Built where | locally by the drafting session with `lake build` (no CI build). |
 | `sorry` count | **0** |
 | `axiom` declarations | **0** |
-| Node status | 7 headlines and their definitions: **proved in Lean** (theorems) or Lean definitions. `EncapsulationTypes`, `ActorLayer`: **PLAN**, no Lean. `Start` is an overview with no status pill. |
+| Node status | 8 headlines and their definitions: **proved in Lean** (theorems) or Lean definitions. `ActorLayer`: **PLAN**, no Lean. `Start` is an overview with no status pill. |
 
 The "proved in Lean" pill on a theorem is set by the site build from the source text: it means the
 theorem's text contains no `sorry`. The check that the files compile is a local `lake build`
@@ -45,6 +45,12 @@ Output of `lake env lean scripts/Axioms.lean`:
 'VauE.match_env_opaque' depends on axioms: [propext]
 'VauE.ignore_hygiene' depends on axioms: [propext, Quot.sound]
 'VauE.lookup_observable' depends on axioms: [propext, Quot.sound]
+'VauE.decap_encap' depends on axioms: [propext]
+'VauE.isEncap_same' depends on axioms: [propext, Quot.sound]
+'VauE.isEncap_other' depends on axioms: [propext, Quot.sound]
+'VauE.decap_other_stuck' depends on axioms: [propext]
+'VauE.capsule_opacity' depends on axioms: [propext, Quot.sound]
+'VauE.capsule_observable_with_decap' depends on axioms: [propext, Quot.sound]
 ```
 
 `propext` and `Quot.sound` are standard axioms of Lean's core logic. `Quot.sound` comes from function
@@ -69,6 +75,10 @@ extensionality, used in the substitution lemmas. No result uses `Classical.choic
   `$lambda` results are reduction sequences under stated hypotheses; `lambda_id_seven` shows the
   hypotheses can be met. **Environment opacity** (`VauE.env_opacity`) observes reduction to primitive
   data; it shows that the order of bindings and shadowed bindings cannot be observed.
+  **Encapsulation types** are this project's addition (a `capsule` term and rules for `$encap k`,
+  `$isEncap k`, `$decap k`); the thesis gives no calculus rules for them. Fresh types are not
+  modeled (types are numbered), and `#t`/`#f` are `dat 1`/`dat 0`. Confluence and environment
+  opacity were re-proved with these rules.
 
 See the [review](#/review) and `VAU_AUDIT.md` in the repository for the claim-by-claim audit.
 

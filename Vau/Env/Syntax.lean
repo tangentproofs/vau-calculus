@@ -32,6 +32,12 @@ namespace VauE
 as in the thesis: `foo = <applicative $foo>`. -/
 inductive Prim where
   | vau | wrap | unwrap | eval | listStar
+  /-- `$encap k`: the encapsulator of encapsulation type `k` (see `Vau/Env/Encapsulation.lean`). -/
+  | encap (k : Nat)
+  /-- `$isEncap k`: the type predicate of encapsulation type `k`. -/
+  | isEncap (k : Nat)
+  /-- `$decap k`: the decapsulator of encapsulation type `k`. -/
+  | decap (k : Nat)
   deriving DecidableEq, Repr
 
 /-- Terms of vau-e. An environment is a list of bindings `(s, T)`, stored inside the term. -/
@@ -59,6 +65,9 @@ inductive Term where
   | eval : Term -> Term -> Term
   /-- `[combine T1 T2 e]`. -/
   | comb : Term -> Term -> Term -> Term
+  /-- An encapsulated object of encapsulation type `k` with content `T` (this project's addition,
+  for Kernel's encapsulation types; see `Vau/Env/Encapsulation.lean`). -/
+  | capsule : Nat -> Term -> Term
 
 /-- Environments: lists of bindings `s <- T`, first binding first. -/
 abbrev Env := List (Prod Nat Term)
@@ -115,6 +124,7 @@ inductive SelfEval : Term -> Prop where
   | ign : SelfEval ign
   | nil : SelfEval nil
   | oper (p q b s : Term) : SelfEval (oper p q b s)
+  | capsule (k : Nat) (v : Term) : SelfEval (capsule k v)
 
 /-- Values: every active subterm is within an operative or an environment. -/
 inductive IsValue : Term -> Prop where
@@ -127,6 +137,7 @@ inductive IsValue : Term -> Prop where
   | oper (p q b s : Term) : IsValue (oper p q b s)
   | pair {a b : Term} : IsValue a -> IsValue b -> IsValue (pair a b)
   | app {t : Term} : IsValue t -> IsValue (app t)
+  | capsule (k : Nat) (v : Term) : IsValue (capsule k v)
 
 /-- Proper lists `(T1 ... Tm)`. -/
 inductive IsList : Term -> Prop where
@@ -143,6 +154,19 @@ nonempty proper lists. -/
 def buildListStar : Term -> Option Term
   | pair x nil => some x
   | pair x rest => Option.map (pair x) (buildListStar rest)
+  | _ => none
+
+/-- `true` iff the term is an encapsulated object of type `k`. -/
+def isCapsuleOf (k : Nat) : Term -> Bool
+  | capsule k' _ => k' == k
+  | _ => false
+
+/-- The answer of the type predicate of type `k` on an argument list: `some true` if every
+argument is an encapsulated object of type `k`, `some false` if some argument is not, and `none`
+if the arguments are not a proper list. -/
+def capsCheck (k : Nat) : Term -> Option Bool
+  | nil => some true
+  | pair x rest => Option.map (fun b => isCapsuleOf k x && b) (capsCheck k rest)
   | _ => none
 
 /-- The list `(a)`. -/

@@ -37,6 +37,7 @@ def isValueB : Term -> Bool
   | app t => isValueB t
   | eval _ _ => false
   | comb _ _ _ => false
+  | capsule _ _ => true
 
 theorem isValueB_iff : forall t : Term, isValueB t = true <-> IsValue t
   | dat n => Iff.intro (fun _ => .dat n) (fun _ => rfl)
@@ -55,6 +56,7 @@ theorem isValueB_iff : forall t : Term, isValueB t = true <-> IsValue t
     exact Iff.intro (fun h => .app h) (fun h => by cases h; assumption)
   | eval a b => Iff.intro (fun h => (nomatch h)) (fun h => (nomatch h))
   | comb a b c => Iff.intro (fun h => (nomatch h)) (fun h => (nomatch h))
+  | capsule k v => Iff.intro (fun _ => .capsule k v) (fun _ => rfl)
 
 /-- Decision procedure for `IsList`. -/
 def isListB : Term -> Bool
@@ -76,6 +78,7 @@ theorem isListB_iff : forall t : Term, isListB t = true <-> IsList t
   | app _ => Iff.intro (fun h => (nomatch h)) (fun h => (nomatch h))
   | eval _ _ => Iff.intro (fun h => (nomatch h)) (fun h => (nomatch h))
   | comb _ _ _ => Iff.intro (fun h => (nomatch h)) (fun h => (nomatch h))
+  | capsule _ _ => Iff.intro (fun h => (nomatch h)) (fun h => (nomatch h))
 
 /-! ## Parallel reduction -/
 
@@ -127,6 +130,13 @@ inductive Par : Term -> Term -> Prop where
       Par (comb (prim .eval) (list2 v (env e1)) (env bs)) (eval v' (env e1'))
   | deltaListStar {vs vs' r : Term} (bs : Env) : IsValue vs -> Par vs vs' ->
       buildListStar vs' = some r -> Par (comb (prim .listStar) vs (env bs)) r
+  | capsule (k : Nat) {v v' : Term} : Par v v' -> Par (capsule k v) (capsule k v')
+  | deltaEncap {v v' : Term} (k : Nat) (bs : Env) : IsValue v -> Par v v' ->
+      Par (comb (prim (.encap k)) (list1 v) (env bs)) (capsule k v')
+  | deltaIsEncap {vs vs' : Term} {b : Bool} (k : Nat) (bs : Env) : IsValue vs -> Par vs vs' ->
+      capsCheck k vs' = some b -> Par (comb (prim (.isEncap k)) vs (env bs)) (dat (if b then 1 else 0))
+  | deltaDecap {v v' : Term} (k : Nat) (bs : Env) : Par v v' ->
+      Par (comb (prim (.decap k)) (list1 (capsule k v)) (env bs)) v'
 
 namespace Par
 
@@ -143,6 +153,7 @@ theorem refl : forall t : Term, Par t t
   | .app t => .app (refl t)
   | .eval a b => .eval (refl a) (refl b)
   | .comb a b c => .comb (refl a) (refl b) (refl c)
+  | .capsule k v => .capsule k (refl v)
 theorem reflEnv : forall bs : Env, Par (.env bs) (.env bs)
   | [] => .envNil
   | (s, t) :: r => .envCons s (refl t) (reflEnv r)
@@ -160,6 +171,7 @@ theorem isValue {v v' : Term} (h : Par v v') (hv : IsValue v) : IsValue v' := by
   | envNil => exact .env _
   | envCons => exact .env _
   | oper => exact .oper _ _ _ _
+  | capsule => exact .capsule _ _
   | pair _ _ iha ihb => cases hv with | pair ha hb => exact .pair (iha ha) (ihb hb)
   | app _ ih => cases hv with | app ht => exact .app (ih ht)
   | _ => cases hv
@@ -228,6 +240,7 @@ theorem pattern : forall {p p' t : Term} {m : Env}, ematch p t = some m -> Par p
   | .app _, _, _, _, hm, _ => by simp [ematch] at hm
   | .eval _ _, _, _, _, hm, _ => by simp [ematch] at hm
   | .comb _ _ _, _, _, _, hm, _ => by simp [ematch] at hm
+  | .capsule _ _, _, _, _, hm, _ => by simp [ematch] at hm
 
 theorem ematch_some : forall {p t t' : Term} {m : Env}, ematch p t = some m -> Par t t' ->
     exists m', ematch p t' = some m' /\ Par (.env m) (.env m')
@@ -265,6 +278,7 @@ theorem ematch_some : forall {p t t' : Term} {m : Env}, ematch p t = some m -> P
   | .app _, _, _, _, hm, _ => by simp [ematch] at hm
   | .eval _ _, _, _, _, hm, _ => by simp [ematch] at hm
   | .comb _ _ _, _, _, _, hm, _ => by simp [ematch] at hm
+  | .capsule _ _, _, _, _, hm, _ => by simp [ematch] at hm
 
 theorem buildListStar_some : forall {x x' r : Term}, buildListStar x = some r -> Par x x' ->
     exists r', buildListStar x' = some r' /\ Par r r'
@@ -294,6 +308,34 @@ theorem buildListStar_some : forall {x x' r : Term}, buildListStar x = some r ->
   | .app _, _, _, hb, _ => by simp [buildListStar] at hb
   | .eval _ _, _, _, hb, _ => by simp [buildListStar] at hb
   | .comb _ _ _, _, _, hb, _ => by simp [buildListStar] at hb
+  | .capsule _ _, _, _, hb, _ => by simp [buildListStar] at hb
+
+theorem isCapsuleOf_eq {k : Nat} {x x' : Term} (hv : IsValue x) (h : Par x x') :
+    isCapsuleOf k x' = isCapsuleOf k x := by
+  cases hv <;> cases h <;> rfl
+
+theorem capsCheck_some {k : Nat} : forall {vs vs' : Term} {b : Bool}, IsValue vs ->
+    capsCheck k vs = some b -> Par vs vs' -> capsCheck k vs' = some b
+  | .nil, _, _, _, hc, h => by cases h; exact hc
+  | .pair x rest, _, _, hv, hc, h => by
+    cases hv with
+    | pair hx hr =>
+      cases h with
+      | pair h1 h2 =>
+        simp only [capsCheck, Option.map_eq_some_iff] at hc
+        exact hc.elim fun b0 hb0 => by
+          simp only [capsCheck, capsCheck_some hr hb0.1 h2, Option.map_some, isCapsuleOf_eq hx h1]
+          exact congrArg some hb0.2
+  | .dat _, _, _, _, hc, _ => by simp [capsCheck] at hc
+  | .prim _, _, _, _, hc, _ => by simp [capsCheck] at hc
+  | .sym _, _, _, _, hc, _ => by simp [capsCheck] at hc
+  | .ign, _, _, _, hc, _ => by simp [capsCheck] at hc
+  | .env _, _, _, _, hc, _ => by simp [capsCheck] at hc
+  | .oper _ _ _ _, _, _, _, hc, _ => by simp [capsCheck] at hc
+  | .app _, _, _, _, hc, _ => by simp [capsCheck] at hc
+  | .eval _ _, _, _, _, hc, _ => by simp [capsCheck] at hc
+  | .comb _ _ _, _, _, _, hc, _ => by simp [capsCheck] at hc
+  | .capsule _ _, _, _, _, hc, _ => by simp [capsCheck] at hc
 
 theorem env_inv {bs : Env} {y : Term} (h : Par (.env bs) y) : exists bs', y = .env bs' := by
   cases h with
@@ -330,6 +372,7 @@ def cdEval (t e t' e' : Term) : Term :=
   | env _, ign => t'
   | env _, nil => t'
   | env _, oper _ _ _ _ => t'
+  | env _, capsule _ _ => t'
   | _, _ => eval t' e'
 
 /-- Development of `[combine <operative v1 v2 body se> x e]` (beta-oper), given developments. -/
@@ -388,6 +431,30 @@ def cdDelta (p : Prim) (x f' x' e' : Term) : Term :=
       | some r => r
       | none => comb f' x' e'
     else comb f' x' e'
+  | .encap k =>
+    match x with
+    | pair v nil =>
+      if isValueB v then
+        match x' with
+        | pair a nil => capsule k a
+        | _ => comb f' x' e'
+      else comb f' x' e'
+    | _ => comb f' x' e'
+  | .isEncap k =>
+    if isValueB x then
+      match capsCheck k x' with
+      | some b => dat (if b then 1 else 0)
+      | none => comb f' x' e'
+    else comb f' x' e'
+  | .decap k =>
+    match x with
+    | pair (capsule k' _) nil =>
+      if k' = k then
+        match x' with
+        | pair (capsule _ a) nil => a
+        | _ => comb f' x' e'
+      else comb f' x' e'
+    | _ => comb f' x' e'
 
 /-- Development of `[combine f x e]`, given the developments `f'`, `x'`, `e'`. -/
 def cdComb (f x e f' x' e' : Term) : Term :=
@@ -416,6 +483,7 @@ def cd : Term -> Term
   | app t => app (cd t)
   | eval t e => cdEval t e (cd t) (cd e)
   | comb f x e => cdComb f x e (cd f) (cd x) (cd e)
+  | capsule k v => capsule k (cd v)
 /-- Complete development of every binding of an environment. -/
 def cdL : Env -> Env
   | [] => []
@@ -471,6 +539,7 @@ theorem Par.eval_case {a a' b b' : Term} (ha : Par a a') (hb : Par b b') (iha : 
       | oper p q r w => exact .evalSelf bs' (ha.selfEval (.oper p q r w)) iha
       | eval u w => exact .eval iha ihb
       | comb u w z => exact .eval iha ihb
+      | capsule k v => exact .evalSelf bs' (ha.selfEval (.capsule k v)) iha
   | _ => rw [cdEval_nonenv (by intro bs h; cases h)]; exact .eval iha ihb
 
 /-- The development of a congruence step on `[combine f x e]`. -/
@@ -617,6 +686,53 @@ theorem Par.comb_case {f f1 x x1 e e1 : Term} (hf : Par f f1) (hx : Par x x1) (h
             next r hr => exact .deltaListStar bs1 (hx.isValue hv) ihx hr
             next => exact fb
           next => exact fb
+        | encap k =>
+          simp only [cdDelta]
+          split
+          next v =>
+            split
+            next hv =>
+              rw [isValueB_iff] at hv
+              cases hx with
+              | pair ha1 hr1 =>
+                cases hr1
+                simp only [cd] at ihx
+                cases ihx with
+                | pair j1 jr1 =>
+                  simp only [cd]
+                  exact .deltaEncap k bs1 (ha1.isValue hv) j1
+            next => exact fb
+          next => exact fb
+        | isEncap k =>
+          simp only [cdDelta]
+          split
+          next hv =>
+            rw [isValueB_iff] at hv
+            split
+            next b hb => exact .deltaIsEncap k bs1 (hx.isValue hv) ihx hb
+            next => exact fb
+          next => exact fb
+        | decap k =>
+          simp only [cdDelta]
+          split
+          next k' v =>
+            split
+            next hk =>
+              subst hk
+              cases hx with
+              | pair ha1 hr1 =>
+                cases hr1
+                cases ha1 with
+                | capsule _ hv1 =>
+                  simp only [cd] at ihx
+                  cases ihx with
+                  | pair j1 jr1 =>
+                    cases j1 with
+                    | capsule _ j =>
+                      simp only [cd]
+                      exact .deltaDecap _ bs1 j
+            next => exact fb
+          next => exact fb
       | _ => exact fb
   | _ => rw [cdComb_nonenv (by intro bs h; cases h)]; exact fb
 
@@ -704,6 +820,23 @@ theorem Par.to_cd {t s : Term} (h : Par t s) : Par s (cd t) := by
       rw [<- cd_env]
       simp only [cd_env, cdComb, cdDelta, (isValueB_iff vs).2 hv, if_true, hr'.1]
       exact hr'.2
+  | capsule k _ ih => simp only [cd]; exact .capsule k ih
+  | @deltaEncap v v' k bs hv _ ih =>
+    simp only [cd]
+    rw [<- cd_env]
+    simp only [cd_env, cdComb, cdDelta, (isValueB_iff v).2 hv, if_true]
+    exact .capsule k ih
+  | @deltaIsEncap vs vs' b k bs hv hvs hc ih =>
+    have hc' := Par.capsCheck_some (hvs.isValue hv) hc ih
+    simp only [cd]
+    rw [<- cd_env]
+    simp only [cd_env, cdComb, cdDelta, (isValueB_iff vs).2 hv, if_true, hc']
+    exact .dat _
+  | @deltaDecap v v' k bs _ ih =>
+    simp only [cd]
+    rw [<- cd_env]
+    simp only [cd_env, cdComb, cdDelta, if_true]
+    exact ih
 
 /-- The diamond property of parallel reduction. -/
 theorem Par.diamond {t s1 s2 : Term} (h1 : Par t s1) (h2 : Par t s2) :
@@ -758,6 +891,9 @@ theorem comb3 {a a' b b' c c' : Term} (ha : Steps a a') (hb : Steps b b') (hc : 
   Star.trans (Steps.comb c ha hb)
     (Star.map (fun y => Term.comb a' b' y) (fun h => Step.comb3 a' b' h) hc)
 
+theorem capsule {k : Nat} {v v' : Term} (h : Steps v v') : Steps (Term.capsule k v) (Term.capsule k v') :=
+  Star.map (Term.capsule k) (fun h => Step.capsule k h) h
+
 end Steps
 
 theorem Par.of_top {t t' : Term} (h : Top t t') : Par t t' := by
@@ -776,6 +912,9 @@ theorem Par.of_top {t t' : Term} (h : Top t t') : Par t t' := by
   | deltaUnwrap e hv => exact .deltaUnwrap e hv (Par.refl _)
   | deltaEval e1 e hv => exact .deltaEval e hv (Par.refl _) (Par.reflEnv e1)
   | deltaListStar e hv hr => exact .deltaListStar e hv (Par.refl _) hr
+  | deltaEncap k e hv => exact .deltaEncap k e hv (Par.refl _)
+  | deltaIsEncap k e hv hc => exact .deltaIsEncap k e hv (Par.refl _) hc
+  | deltaDecap k e => exact .deltaDecap k e (Par.refl _)
 
 theorem Par.of_step {t t' : Term} (h : Step t t') : Par t t' := by
   induction h with
@@ -794,6 +933,7 @@ theorem Par.of_step {t t' : Term} (h : Step t t') : Par t t' := by
   | comb1 b c _ ih => exact .comb ih (Par.refl b) (Par.refl c)
   | comb2 a c _ ih => exact .comb (Par.refl a) ih (Par.refl c)
   | comb3 a b _ ih => exact .comb (Par.refl a) (Par.refl b) ih
+  | capsule k _ ih => exact .capsule k ih
 
 theorem Par.toSteps {t t' : Term} (h : Par t t') : Steps t t' := by
   induction h with
@@ -835,6 +975,16 @@ theorem Par.toSteps {t t' : Term} (h : Par t t') : Steps t t' := by
   | deltaListStar bs hv h hr ih =>
     exact (Steps.comb3 (Steps.refl _) ih (Steps.refl _)).trans
       (Steps.top (.deltaListStar bs (h.isValue hv) hr))
+  | capsule k _ ih => exact Steps.capsule ih
+  | deltaEncap k bs hv h ih =>
+    exact (Steps.comb3 (Steps.refl _) (Steps.pair ih (Steps.refl _)) (Steps.refl _)).trans
+      (Steps.top (.deltaEncap k bs (h.isValue hv)))
+  | deltaIsEncap k bs hv h hc ih =>
+    exact (Steps.comb3 (Steps.refl _) ih (Steps.refl _)).trans
+      (Steps.top (.deltaIsEncap k bs (h.isValue hv) hc))
+  | deltaDecap k bs _ ih =>
+    exact (Steps.comb3 (Steps.refl _) (Steps.pair (Steps.capsule ih) (Steps.refl _)) (Steps.refl _)).trans
+      (Steps.top (.deltaDecap k bs))
 
 theorem steps_iff_par_star {t t' : Term} : Steps t t' <-> Vau.Star Par t t' :=
   Iff.intro (Vau.Star.mono (fun h => Vau.Star.single (Par.of_step h))) (Vau.Star.mono Par.toSteps)
