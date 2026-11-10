@@ -5,24 +5,31 @@ calculi for reasoning about **fexprs**: first-class Lisp combiners that receive 
 unevaluated. Shutt developed it in his PhD thesis (Worcester Polytechnic Institute, 2010) and used it as
 the basis of the Kernel programming language.
 
-## What is here now (Step 1)
+## What is here now (Step 2)
 
-- [Start here](#/start): what vau calculus is. The [Start](#/node/Start) node explains why evaluation
-  must be explicit. Then come the definitions of the pure **vau-x calculus**: [Syntax](#/node/Syntax),
-  [Values](#/node/Values), [Substitution](#/node/Substitution) and the seven general reduction rules in
-  [ReductionSchemata](#/node/ReductionSchemata).
-- Two informal nodes on environments, [Environments](#/node/Environments) and
-  [VauEnvironments](#/node/VauEnvironments), so that `$vau` makes sense.
+- [Start here](#/start): the five **planned** headlines, then every node they build on, simplest first.
+- The [Start](#/node/Start) node explains why evaluation must be explicit. The definitions of the pure
+  **vau-x calculus** follow: [Syntax](#/node/Syntax), [Values](#/node/Values),
+  [Substitution](#/node/Substitution), the seven general rules in
+  [ReductionSchemata](#/node/ReductionSchemata), and their
+  [CompatibleClosure](#/node/CompatibleClosure).
+- The planned headlines: [EvalIsReduction](#/node/EvalIsReduction),
+  [ConservativeExtension](#/node/ConservativeExtension) (with [LambdaEmbedding](#/node/LambdaEmbedding)),
+  [Confluence](#/node/Confluence), [DerivedLambda](#/node/DerivedLambda) and
+  [NontrivialEquivalence](#/node/NontrivialEquivalence).
+- Environment nodes from vau-e: [Environments](#/node/Environments),
+  [VauEnvironments](#/node/VauEnvironments) and [WrapUnwrap](#/node/WrapUnwrap).
+- Later: [EnvironmentOpacity](#/node/EnvironmentOpacity), [EncapsulationTypes](#/node/EncapsulationTypes)
+  and the [ActorLayer](#/node/ActorLayer).
 
 ## What is not here yet
 
-**No Lean exists in this repository yet.** Every node is a *concept* marked **PLAN: no Lean yet**. A node
-explains the theory from the cited sources; it does not say that anything is proved. The plan is:
-
-1. a proof graph of the planned formalization, with every node marked as planned;
-2. a Lean 4 formalization of the pure vau-x rules in this repository: syntax, substitution, the
-   reduction rules, their compatible closure, evaluation as a special case of reduction, a lambda
-   embedding, and confluence of the concrete vau-x rules.
+**No Lean exists in this repository yet.** All 18 nodes are *concepts* marked **PLAN: no Lean yet**. A
+node explains the theory from the cited sources and says what the Lean is meant to state. It does not
+say that anything is proved. The next step is a Lean 4 formalization of the pure vau-x rules in this
+repository: syntax, substitution, the reduction rules, their compatible closure, evaluation as a special
+case of reduction, the lambda embedding, conservative extension if it can be stated honestly, and
+confluence of the concrete vau-x rules.
 
 The Lean will **not** formalize Shutt's general framework of regular substitutive reduction systems. As
 Lean lands, nodes will change from PLAN to proved or partial, and the [Trust](#/trust) page will list the

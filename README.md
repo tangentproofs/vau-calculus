@@ -46,9 +46,14 @@ formalization of vau calculus.
 
 Step 1 is done: a plain-English explainer of what vau calculus is (why
 evaluation is explicit, the pure vau-x syntax, values, substitution, the seven
-general reduction rules, and informal environments for `$vau`). Every node is a
-concept marked PLAN, because no Lean exists yet. Next: a proof graph of the
-planned formalization, then the Lean.
+general reduction rules, and informal environments for `$vau`).
+
+Step 2 is done: a proof graph of the planned formalization, with 18 nodes. Five
+are planned headlines: evaluation is a special case of reduction, conservative
+extension of the lambda calculus, confluence of the vau-x rules, derived
+`$lambda`, and nontrivial contextual equivalence. Every node is a concept
+marked PLAN, because no Lean exists yet. Nothing on the site is a proved
+theorem. Next: the Lean.
 
 ## Sorry and axiom count
 
@@ -87,7 +92,8 @@ Relative to informalization-tools commit `7260c46`:
   being built.
 - `engine/gen.py`: a site may give its own `bannerHtml`, `creditHtml`,
   `footerHtml`, `aboutCreditMd`, and Start page wording (`startTitle`,
-  `startIntro`, `startLink`).
+  `startIntro`, `startLink`), and the labels for headlines (`headlineLegend`,
+  `headlineWord`, `startSide`) so that planned headlines are not called theorems.
 - `engine/tools/scan_decls.py`, `engine/assets/app.js`, `engine/assets/style.css`:
   a concept node may carry `"formal": "planned" | "partial" | "proved"`, shown
   as a pill on its page, on the Start page and in the node list. The Start page

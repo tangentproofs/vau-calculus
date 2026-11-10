@@ -103,7 +103,7 @@ function graphPage() {
         <p class="muted">${CFG.creditHtml} The job here: <b>you</b> are the checker.
         A node turns green when you tick <b>I understand</b> (lightest), pass its quiz (middle) or do both (darkest), and it counts as understood once everything its statement mentions is too, just as Lean won't accept a statement whose ingredients it doesn't know.</p>
         <p><a class="start-link" href="#/start">${CFG.startLink || "Start here: what the theorem says"} →</a>
-        <span class="small muted">the theorem and the ${STMT.defs.length} definitions you need to read it, before any proof</span></p>
+        <span class="small muted">${CFG.headlineWord ? `the ${CFG.headlineWord}s` : "the theorem"} and the ${STMT.defs.length} definitions you need to read ${CFG.headlineWord ? "them" : "it"}, before any proof</span></p>
         <div class="toolbar">
           <button data-v="spine">Explained spine (${spine.length})</button>
           <button data-v="neighborhood">Spine + direct deps</button>
@@ -128,15 +128,15 @@ function graphPage() {
           <h3>Legend</h3>
           ${STATUS_ORDER.map((k) => `<div><span class="sw" style="background:${COLORS[k]}"></span>${STATUS_LABEL[k]}</div>`).join("")}
           <div><span class="sw" style="background:transparent;border:2px dashed ${PENDING_COLOR}"></span>marked understood, a mention isn't yet</div>
-          <div><span class="sw" style="background:transparent;border:2px solid #f92672"></span>headline theorem</div>
+          <div><span class="sw" style="background:transparent;border:2px solid #f92672"></span>${CFG.headlineLegend || "headline theorem"}</div>
           <div><span class="sw stmt-ring"></span>needed to read the main statement</div>
         </div>
         <div class="panel small">
           <h3>Start here</h3>
-          <p>Read <a href="#/start">what the theorem says</a>: the statement, then the definitions it uses, simplest first.</p>
+          <p>${CFG.startSide || `Read <a href="#/start">what the theorem says</a>: the statement, then the definitions it uses, simplest first.`}</p>
           <ol>
             ${STMT.defs.map((id) => `<li><a href="#/node/${encodeURIComponent(id)}">${esc(id)}</a></li>`).join("")}
-            ${HEADLINES.map((id) => `<li><a href="#/node/${encodeURIComponent(id)}">${esc(id)}</a> — the theorem</li>`).join("")}
+            ${HEADLINES.map((id) => `<li><a href="#/node/${encodeURIComponent(id)}">${esc(id)}</a> — ${CFG.headlineWord || "the theorem"}</li>`).join("")}
           </ol>
           <p><a href="#/review">The review: is each statement faithful? →</a></p>
         </div>
@@ -297,7 +297,7 @@ function nodePage(id) {
       <span class="name">${esc(d.name)}</span></div>
       ${n ? `<div class="takeaway summary">${n.summaryHtml}</div>` : ""}
       ${HEADLINES.includes(id) ? `<p><a class="start-link" href="#/start">${CFG.startLink || "Start here: what the theorem says"} →</a> <span class="small muted">this statement and the ${STMT.defs.length} definitions it uses, simplest first</span></p>`
-        : stmtSet.has(id) ? `<p class="small">Needed to read the main statement · <a href="#/start">what the theorem says →</a></p>` : ""}
+        : stmtSet.has(id) ? `<p class="small">Needed to read the main statement · <a href="#/start">${CFG.startLink || "what the theorem says"} →</a></p>` : ""}
       <p class="small muted status-note" id="status-note"></p>
     </div>
     <div class="sbs">

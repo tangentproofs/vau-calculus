@@ -19,7 +19,7 @@
    "url": "https://web.cs.wpi.edu/~jshutt/dissertation/etd-090110-124904-Shutt-Dissertation.pdf",
    "description": "What vau calculus is: explicit evaluation, the pure vau-x syntax and its reduction rules. A Lean 4 formalization is planned.",
    "explainer": true,
-   "nodeCount": 7
+   "nodeCount": 18
   }
  ],
  "others": []

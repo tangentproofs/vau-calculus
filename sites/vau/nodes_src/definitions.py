@@ -71,8 +71,20 @@ explain environments informally, from Shutt's vau-e calculus:
 ## What is planned
 
 No Lean exists in this repository yet. The plan is a Lean 4 formalization of the pure vau-x rules:
-syntax, substitution, the reduction rules, their compatible closure, and confluence of those concrete
-rules. It will **not** formalize Shutt's general framework of regular substitutive reduction systems
+syntax, substitution, the reduction rules, their [compatible closure](#/node/CompatibleClosure), and
+then five planned headlines:
+
+- [EvalIsReduction](#/node/EvalIsReduction): every evaluation is a reduction sequence;
+- [ConservativeExtension](#/node/ConservativeExtension): vau-x keeps the lambda calculus equations,
+  through the [lambda embedding](#/node/LambdaEmbedding);
+- [Confluence](#/node/Confluence) of the concrete vau-x rules;
+- [DerivedLambda](#/node/DerivedLambda): `$lambda` from `$vau` and [wrap](#/node/WrapUnwrap);
+- [NontrivialEquivalence](#/node/NontrivialEquivalence): contextual equivalence is not trivial.
+
+Three more nodes are for later: [EnvironmentOpacity](#/node/EnvironmentOpacity),
+[EncapsulationTypes](#/node/EncapsulationTypes) and the [ActorLayer](#/node/ActorLayer).
+
+The Lean will **not** formalize Shutt's general framework of regular substitutive reduction systems
 (thesis chapter 13). Until the Lean lands, every node on this site is marked **PLAN**.
 """),
      [q("In the lambda calculus with implicit evaluation, why does adding a fexpr that inspects its operand make the theory trivial?",
