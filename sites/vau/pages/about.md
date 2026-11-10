@@ -5,27 +5,30 @@ calculi for reasoning about **fexprs**: first-class Lisp combiners that receive 
 unevaluated. Shutt developed it in his PhD thesis (Worcester Polytechnic Institute, 2010) and used it as
 the basis of the Kernel programming language.
 
-## What is here now (Step 3)
+## What is here now (Step 4)
 
 - [Start here](#/start): the headline statements, then every definition they use, simplest first.
 - The [Start](#/node/Start) node explains why evaluation must be explicit.
 - The pure **vau-x calculus** in Lean (folder `Vau/`): [Term](#/node/Term), [IsValue](#/node/IsValue),
   substitution [inst](#/node/inst), the seven rules [Top](#/node/Top), and their compatible closure
   [Step](#/node/Step).
-- Four headlines **proved in Lean**:
+- Four vau-x headlines **proved in Lean**:
   [eval_is_reduction](#/node/eval_is_reduction),
   [conservative_extension](#/node/conservative_extension) (through the lambda embedding
   [embed](#/node/embed)), [confluence](#/node/confluence) and [nontrivial](#/node/nontrivial).
-- Still **PLAN** (no Lean): [DerivedLambda](#/node/DerivedLambda), and the environment nodes
-  [Environments](#/node/Environments), [VauEnvironments](#/node/VauEnvironments) and
-  [WrapUnwrap](#/node/WrapUnwrap). Later: [EnvironmentOpacity](#/node/EnvironmentOpacity),
+- A Lean model of Shutt's **vau-e** calculus (folder `Vau/Env/`, namespace `VauE`), with symbols and
+  environments: [VauE.Env](#/node/VauE.Env), the rules [VauE.Top](#/node/VauE.Top), the `$vau` call
+  rule [VauE.vau_call](#/node/VauE.vau_call), [VauE.unwrap_wrap](#/node/VauE.unwrap_wrap), and the
+  fifth headline [VauE.derived_lambda](#/node/VauE.derived_lambda).
+- Still **PLAN** (no Lean): [EnvironmentOpacity](#/node/EnvironmentOpacity),
   [EncapsulationTypes](#/node/EncapsulationTypes) and the [ActorLayer](#/node/ActorLayer).
 
 ## What the Lean does not do
 
 The Lean does **not** formalize Shutt's general framework of regular substitutive reduction systems
-(thesis chapter 13). Every result is about the concrete vau-x rules, with no delta-rules and no
-environments. Some definitions are this project's own choice (the evaluator, the notion of
+(thesis chapter 13), and it does not prove confluence of vau-e. The vau-x results are about the concrete
+vau-x rules with no delta-rules. The vau-e results use unsorted environments and two delta-rules
+(`$eval`, `$list*`) written by this project. Some definitions are this project's own choice (the evaluator, the notion of
 observation); their nodes say so. The [Trust](#/trust) page lists the `sorry` and axiom counts and the
 `#print axioms` output.
 

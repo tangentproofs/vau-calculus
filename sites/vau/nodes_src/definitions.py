@@ -1,4 +1,5 @@
-# Step 1 nodes: what vau calculus is. Start, Environments and VauEnvironments are concept nodes. Term,
+# Step 1 nodes: what vau calculus is. Start is a concept node; VauE.Env and VauE.vau_call are Lean
+# declarations (Step 4). Term,
 # IsValue, inst and Top are Lean declarations in Vau/ (Step 3); their text explains the Lean. Notation is ASCII: [eval T], [combine T1 T2], <T> (applicative), <vau x.T>, <vau0.T>,
 # <vau2.T> (compound operatives), T[x <- V] (substitution). "%T" below expands to the thesis PDF URL,
 # "%N" to the NEPLS talk, "%D1" to Schumacher's "Fexpr the Ultimate Lambda".
@@ -66,7 +67,7 @@ order:
 
 Real Kernel code uses `$vau` with symbols and environments. To make `$vau` understandable, two more nodes
 explain environments informally, from Shutt's vau-e calculus:
-[Environments](#/node/Environments) and [VauEnvironments](#/node/VauEnvironments).
+[VauE.Env](#/node/VauE.Env) and [VauE.vau_call](#/node/VauE.vau_call).
 
 ## What the Lean proves
 
@@ -81,13 +82,19 @@ This repository has a Lean 4 formalization of the pure vau-x rules (folder `Vau/
 - [confluence](#/node/confluence) of the concrete vau-x rules;
 - [nontrivial](#/node/nontrivial): contextual equivalence in vau-x is not trivial.
 
-A fifth headline, [DerivedLambda](#/node/DerivedLambda) (`$lambda` from `$vau` and
-[wrap](#/node/WrapUnwrap)), needs environments and is still a **PLAN**. So are
-[EnvironmentOpacity](#/node/EnvironmentOpacity), [EncapsulationTypes](#/node/EncapsulationTypes) and the
-[ActorLayer](#/node/ActorLayer).
+A fifth headline is about Kernel-style code with symbols and environments. A separate Lean model of
+Shutt's vau-e calculus ([environments](#/node/VauE.Env), [`$vau`](#/node/VauE.vau_call),
+[wrap and unwrap](#/node/VauE.unwrap_wrap)) proves
+[derived_lambda](#/node/VauE.derived_lambda): Shutt's `$lambda`, defined from `$vau`, `wrap` and
+`eval`, evaluates its body with the parameters bound to the evaluated arguments, and
+`lambda_static_scope` shows that the body runs in the environment of the `$lambda` expression, not the
+caller's. Still **PLAN**:
+[EnvironmentOpacity](#/node/EnvironmentOpacity), [EncapsulationTypes](#/node/EncapsulationTypes) and
+the [ActorLayer](#/node/ActorLayer).
 
 The Lean does **not** formalize Shutt's general framework of regular substitutive reduction systems
-(thesis chapter 13). Each result is about the concrete vau-x rules only, with no delta-rules.
+(thesis chapter 13), and it does not prove confluence of vau-e. Each vau-x result is about the concrete
+vau-x rules with no delta-rules.
 """),
      [q("In the lambda calculus with implicit evaluation, why does adding a fexpr that inspects its operand make the theory trivial?",
         ["Because fexprs cannot be typed",
@@ -431,15 +438,15 @@ the NEPLS talk, Lisp `lambda` "constructs fexprs with applicative wrappers aroun
      ])
 
 # ---------------------------------------------------------------- 11 (informal). Environments
-node("Environments",
-     "Environments, informally (from vau-e)",
+node("VauE.Env",
+     "Environments (vau-e)",
      "In Shutt's vau-e calculus an environment is a finite list of bindings of symbols to terms, and "
-     "`[eval s e]` looks up the symbol `s` in `e`. Pure vau-x has no environments.",
+     "`[eval s e]` looks up the symbol `s` in `e`. Pure vau-x has no environments; the Lean models vau-e separately.",
      L("""
 ## Plain English
 
 Pure vau-x has **no environments**. But real Kernel code, and Shutt's larger calculi vau-e and vau-p, do.
-This node gives only what is needed to read [`$vau`](#/node/VauEnvironments). It follows Shutt's pure
+This node gives what is needed to read [`$vau`](#/node/VauE.vau_call). It follows Shutt's pure
 **vau-e calculus** ([thesis section 9.1](%T#page=195)).
 
 **What an environment is.** A list of bindings `s <- T` of symbols to terms. We write it
@@ -466,10 +473,29 @@ take it apart. Shutt points out (thesis chapter 15) that this is one reason why 
 leave a nontrivial theory. Dale Schumacher's actor implementation of Kernel shows the same idea in
 another way: an environment is an actor that answers `#lookup` messages, and passes a lookup it cannot
 answer to its parent ([Fexpr the Ultimate Lambda](%D1)).
+
+## In the Lean
+
+The file `Vau/Env/Syntax.lean` (namespace `VauE`) defines vau-e terms and environments together:
+`VauE.Term` has constructors for primitive data, primitive operatives (`$vau`, `$wrap`, `$unwrap`,
+`$eval`, `$list*`), symbols, `#ignore`, `()`, environments (`env e`), compound operatives
+`oper ptree eparm body senv`, pairs, applicatives, `eval t e` and `comb t1 t2 e`. `VauE.Env` is
+`List (Prod Nat Term)`: a list of bindings `(s, t)`.
+
+- `Env.lookup s e`: the term bound to `s` by the **first** binding of `s` in `e`.
+- `Env.join e1 e2`: the bindings of `e1`, then those of `e2`. `Env.lookup_join` proves that a lookup
+  in `e1 . e2` tries `e1` first, then `e2`, which is Shutt's "left wins".
+- `ematch ptree t`: Shutt's `match` (9.6), with the check that the two halves of a pair parameter
+  tree share no symbol.
+
+**One difference from Shutt.** Shutt keeps the bindings sorted, with no symbol bound twice, so two
+environments with the same bindings are the same term. The Lean uses plain lists. Every lookup gives
+the same answer as Shutt's, but two lists of the same bindings in a different order are different
+terms, so the Lean's equational theory of vau-e is weaker than Shutt's. Symbols are numbers.
 """),
      [q("Does pure vau-x have environments?",
         ["Yes", "No: environments come from vau-e and vau-p", "Only the empty environment", "Only for primitive operatives"],
-        1, "Shutt removes environments in vau-x. This node uses vau-e to explain `$vau`."),
+        1, "Shutt removes environments in vau-x. The Lean models vau-e in a separate namespace, `VauE`."),
       q("What does `[eval s e]` reduce to in vau-e?",
         ["`s`", "`lookup(s, e)`, if `s` is bound in `e`", "`e`", "`[combine s e]`"],
         1, "Symbol evaluation is lookup in the environment of the eval."),
@@ -480,13 +506,13 @@ answer to its parent ([Fexpr the Ultimate Lambda](%D1)).
         ["Yes", "No: environments are encapsulated", "Only the static environment", "Only in vau-x"],
         1, "Environments and compound operatives are encapsulated objects. Fexprs can take apart pairs and atoms only.")],
      caveats=[
-         "Informal only. There is no Lean for environments yet; that is planned (see DerivedLambda).",
+         "The Lean environments are unsorted lists with first-binding lookup, not Shutt's normalized environments. Lookups agree; equality of environment terms does not.",
          "This node follows the pure vau-e calculus. Kernel's environments are mutable and have parents (`$define!`); mutation is not covered here (Shutt treats it in thesis chapter 12).",
          "The `{{...}}` notation is this site's ASCII for Shutt's double angle brackets.",
      ])
 
 # ---------------------------------------------------------------- 12 (informal). $vau static and dynamic environment
-node("VauEnvironments",
+node("VauE.vau_call",
      "$vau: the static and the dynamic environment",
      "Evaluating `($vau ptree eparm body)` builds a compound operative that keeps the environment it was built in "
      "(the static environment). When it is called, it can bind the caller's environment (the dynamic environment) "
@@ -498,7 +524,8 @@ In Kernel, `$vau` builds fexprs. A call has the form `($vau ptree eparm body)`:
 
 - `ptree` is a *parameter tree*: a symbol, `()`, `#ignore`, or a pair of parameter trees. No symbol may
   appear twice.
-- `eparm` is a symbol or `#ignore`. It names the caller's environment.
+- `eparm` is usually a symbol or `#ignore`; it names the caller's environment. (In the calculus it
+  may be any parameter tree, matched against the environment.)
 - `body` is the expression to evaluate when the operative is called.
 
 **Building the operative.** In Shutt's vau-e calculus, `$vau` is a primitive operative with this
@@ -548,6 +575,21 @@ This is combine-wrap with environments.
 has none. In vau-x one writes the compound operatives `<vau x.T>`, `<vau0.T>` and `<vau2.T>` directly.
 Shutt's vau-p calculus joins the two worlds: `$vau` binds parameters to substitutable variables when it
 builds the operative, and the operands are substituted when it is called.
+
+## The Lean statement
+
+```
+theorem vau_call {p b v : Term} {d : Nat} {e1 e2 m : Env} (hp : IsValue p) (hv : IsValue v)
+    (hd : disjoint (syms p) [d] = true) (hm : ematch p v = some m) :
+    Steps (comb (oper p (sym d) b (env e1)) v (env e2))
+      (eval b (env (Env.join (Env.join m [(d, env e2)]) e1)))
+```
+
+In words: call the operative `<operative p d b e1>` on the operand tree `v` from the dynamic
+environment `e2`. If `p` matches `v` with bindings `m`, and `d` is not also in `p`, the body `b` is
+evaluated in `m`, then `d <- e2`, then the static environment `e1`. `vau_call_lookup` spells out
+lookups in that environment: a symbol not bound by `p` is `e2` if it is `d`, and otherwise is
+looked up in `e1`. The rules themselves are in `VauE.Top` (`beta` and `deltaVau`).
 """),
      [q("Which environment becomes the static environment of the operative built by `($vau (x) e body)`?",
         ["The caller's environment at each later call", "The environment in which the `$vau` combination is evaluated", "The empty environment", "The global environment"],
@@ -565,7 +607,7 @@ builds the operative, and the operands are substituted when it is called.
         ["Yes, a delta-rule", "No: `$vau` needs symbols, which vau-x does not have", "Yes, beta-vau", "Only for `#ignore`"],
         1, "Shutt says no natural vau-x schema can be built for `$vau`.")],
      caveats=[
-         "Informal only. This node follows Shutt's pure vau-e calculus. There is no Lean for environments or `$vau` yet.",
+         "The Lean models Shutt's pure vau-e calculus in namespace `VauE`, with unsorted environments (see VauE.Env). It proves this one-step call rule; it does not prove confluence of vau-e.",
          "In vau-e the body of a compound operative is one expression; Kernel allows a sequence. Shutt explains that without side effects one expression is enough.",
          "Kernel creates a fresh child environment for each call, which matters once environments can be mutated. Pure vau-e uses the join `match(...) . e1` instead.",
      ])

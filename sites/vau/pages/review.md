@@ -13,7 +13,7 @@ claim it is named for. The claim-by-claim honesty audit is `VAU_AUDIT.md` in the
 | [conservative_extension](#/node/conservative_extension) | `LConv M N <-> Conv (embed M) (embed N)` | thesis 15.4, map (15.28), informal | vau-x form of the map; call-by-value lambda. Shutt describes the image as the full lambda calculus; for vau-x the Lean shows it is lambda-v (see the embed node) |
 | [confluence](#/node/confluence) | `Steps t s1 -> Steps t s2 -> exists u, Steps s1 u /\ Steps s2 u` | thesis 14.1.4 with Theorem 13.104 (Church-Rosser of vau-x) | direct proof; no delta-rules; no SRS framework |
 | [nontrivial](#/node/nontrivial) | `Not (eval (dat 5) = dat 5) /\ CtxEquiv (eval (dat 5)) (dat 5) /\ Not (CtxEquiv (dat 5) (dat 6))` | the point of thesis chapter 15 against Wand (1998) | the observation in `CtxEquiv` |
-| [DerivedLambda](#/node/DerivedLambda) | none: **PLAN** | thesis (4.10) | not formalized |
+| [VauE.derived_lambda](#/node/VauE.derived_lambda) | `Ground e0 -> lookup $lambda e = lambdaOp e0 -> ... -> Steps (eval (($lambda p b) . args) e) (eval b (m . e))` | thesis (4.9), (4.10), traces (4.18)-(4.22) | vau-e with unsorted environments; delta-rules for `$eval`, `$list*`; one body expression |
 
 None of the headlines has a PARTIAL or CONDITIONAL label: none uses `sorry`, and none has a hypothesis
 beyond what the table shows.
@@ -29,8 +29,10 @@ the drafting model against the extracted text of the PDF. No person has checked 
 | [IsValue](#/node/IsValue) | thesis (9.25), discussion after (9.5) | "within an operative" read as: inside the body of a compound operative |
 | [inst](#/node/inst) | thesis (9.19) | de Bruijn; defined for all terms, used only on values (beta-vau) |
 | [Top](#/node/Top) | thesis (9.25) | rule names are this project's; no delta-rules |
-| [Environments](#/node/Environments) | thesis (9.1), (9.6), (9.7) | informal; pure vau-e, no mutation |
-| [VauEnvironments](#/node/VauEnvironments) | thesis (9.7beta), (9.12), section 4.2 | informal; vau-x itself has no `$vau` rule |
+| [VauE.Env](#/node/VauE.Env) | thesis (9.1), (9.6), (9.7) | pure vau-e, no mutation; unsorted lists with first-binding lookup |
+| [VauE.vau_call](#/node/VauE.vau_call) | thesis (9.7beta), (9.12), section 4.2 | one-step call rule; vau-x itself has no `$vau` rule |
+| [VauE.Top](#/node/VauE.Top) | thesis (9.7), (9.12) | (9.7a) read with its environment operand; `$eval`, `$list*` rules are this project's |
+| [VauE.unwrap_wrap](#/node/VauE.unwrap_wrap) | thesis (9.12), section 4.2 | standard bindings of `wrap`, `unwrap` by hypothesis |
 | [Start](#/node/Start) | thesis 8.4.1 and chapter 15; NEPLS talk; Wand 1998 | motivation; Wand summarized, not quoted |
 | [Step](#/node/Step) | thesis section 2.3 | compatible closure, checked by `Step.plug` and `Step.exists_ctx` |
 
@@ -38,8 +40,6 @@ the drafting model against the extracted text of the PDF. No person has checked 
 
 | node | source | note |
 |---|---|---|
-| [WrapUnwrap](#/node/WrapUnwrap) | thesis (9.12), section 4.2 | the wrapper `<T>` itself is in the Lean; `$wrap`/`$unwrap` are not |
-| [DerivedLambda](#/node/DerivedLambda) | thesis (4.10) | needs environments |
 | [EnvironmentOpacity](#/node/EnvironmentOpacity) | thesis chapter 5 | informal |
 | [EncapsulationTypes](#/node/EncapsulationTypes) | thesis section 7.2 | later |
 | [ActorLayer](#/node/ActorLayer) | Schumacher's three posts | later; "no published confluence proof" means we found none |

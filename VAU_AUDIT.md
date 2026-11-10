@@ -24,6 +24,15 @@ the fixes below. No person has reviewed this audit.
 'Vau.conservative_extension' depends on axioms: [propext, Quot.sound]
 'Vau.nontrivial' depends on axioms: [propext, Quot.sound]
 'Vau.run_wrapF_F7' does not depend on any axioms
+'VauE.lambda_def' depends on axioms: [propext]
+'VauE.lambda_expr' depends on axioms: [propext, Quot.sound]
+'VauE.lambda_call' depends on axioms: [propext, Quot.sound]
+'VauE.derived_lambda' depends on axioms: [propext, Quot.sound]
+'VauE.lambda_eq_wrap_vau' depends on axioms: [propext, Quot.sound]
+'VauE.vau_call' depends on axioms: [propext]
+'VauE.unwrap_wrap' depends on axioms: [propext]
+'VauE.lambda_id_seven' depends on axioms: [propext, Quot.sound]
+'VauE.lambda_static_scope' depends on axioms: [propext, Quot.sound]
 ```
 
 ## Headlines: claim against Lean statement
@@ -34,7 +43,7 @@ the fixes below. No person has reviewed this audit.
 | `conservative_extension` | `LConv M N <-> Conv (embed M) (embed N)` | honest for call-by-value lambda. Shutt says the image has the full lambda theory; the Lean shows lambda-v for vau-x (caveat added). |
 | `confluence` | `Steps t s1 -> Steps t s2 -> exists u, Steps s1 u /\ Steps s2 u` | honest. Direct proof for the concrete rules; no SRS framework; no delta-rules. |
 | `nontrivial` | `Not (eval (dat 5) = dat 5) /\ CtxEquiv (eval (dat 5)) (dat 5) /\ Not (CtxEquiv (dat 5) (dat 6))` | honest shape against Wand. The observation in `CtxEquiv` is this project's choice (caveats present and one added). |
-| `DerivedLambda` | none | PLAN; claims no proof. |
+| `DerivedLambda` | none at the time | superseded by the Addendum, Step 4 below. |
 
 ## Model fidelity to thesis (9.25)
 
@@ -80,3 +89,36 @@ terms, numbered primitives, no delta-rules.
   (4.10), Theorem 13.104, section 14.1.4, Definition 13.90, section 15.4) are
   correct.
 - Nodes still marked PLAN claim no proof of their own.
+
+## Addendum, Step 4 (vau-e and derived `$lambda`)
+
+A separate AI agent (Claude) audited the vau-e Lean and its site text, read-only, against thesis
+section 9.1 and chapter 4. Its findings and the fixes:
+
+| # | severity | finding | fix |
+|---|---|---|---|
+| 1 | high | The `vau_call` node quoted a statement with `bind`/`emp`, which no longer exist. | Quote corrected to the source. |
+| 2 | high | The `VauE.Env` node said `Env` is `emp` or `bind`. | Now: `List (Prod Nat Term)`. |
+| 3 | medium | "Statically scoped" was claimed from `derived_lambda`, where the static and calling environments are the same `e`. | New theorem `lambda_static_scope` (made in `e1`, called from `e2`); wording changed everywhere. |
+| 4 | low | A quiz answer relied on `lambda_call` while the question was about `derived_lambda`. | Question now about `lambda_static_scope`. |
+| 5 | low | "evaluates to the value of c" suggested uniqueness. | Now "reduces to `v`"; no uniqueness claimed. |
+| 6 | low | "Every lookup agrees" ignored shadowed duplicate bindings. | Caveat rewritten. |
+| 7 | low | Minor undisclosed details (environment operand must be literal `env e`; value conditions on `$eval`, `$list*`; primitive data numbered; `eparm` may be any parameter tree). | Caveats added. |
+| 8-10 | low | Stale headings, link text, audit row. | Fixed. |
+
+The agent found the syntax, values, contexts, `match`, schemata (9.7) and delta-rules (9.12) faithful,
+all quoted statements (after fix 1) and Lean names correct, every quiz key correct, and no
+non-ASCII text. Summary table:
+
+| node | Lean statement | verdict |
+|---|---|---|
+| `VauE.derived_lambda` | under `Ground e0`, `lookup $lambda e = lambdaOp e0`, values `p`, `b`, proper list `args` evaluating to values `vs`, and `ematch p vs = some m`: `Steps (eval (($lambda p b) . args) e) (eval b (m . e))` | honest for vau-e with one body expression. Every assumption is a named hypothesis; `lambda_id_seven` shows they can be met. |
+| `VauE.lambda_eq_wrap_vau` | `Conv` between `($lambda p b)` and `(wrap ($vau p #ignore b))` evaluated in `e` | honest form of thesis (4.9), under stated bindings. |
+| `VauE.vau_call` | one beta-oper step with environment parameter `d` | it is one rule instance; the node says so. |
+| `VauE.unwrap_wrap` | if `c` reduces to a value `v`, `(unwrap (wrap c))` reduces to `v` | honest, under stated bindings; no uniqueness claimed. |
+| `VauE.lambda_static_scope` | `($lambda p b)` in `e1`, then `(f . args)` from `e2` with `f` bound to the result: the body runs in `m . e1` | added after the audit: the evidence for static scope. |
+
+Disclosed differences from the thesis: unsorted environments (lookup agrees,
+term equality weaker); delta-rules for `$eval` and `$list*` are this project's;
+(9.7a) read with its environment operand; symbols are numbers; no `$define!`,
+so `$lambda` is bound by hypothesis. Not claimed: confluence of vau-e.

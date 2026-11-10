@@ -5,3 +5,6 @@ import Vau.Confluence
 import Vau.Eval
 import Vau.Lambda
 import Vau.Contextual
+import Vau.Env.Syntax
+import Vau.Env.Reduction
+import Vau.Env.Lambda

@@ -41,9 +41,9 @@ There are no delta-rules.
 
 **This work does not formalize Shutt's full Regular Substitutive Reduction
 Systems framework** (thesis chapter 13). Confluence is proved directly for the
-concrete vau-x rules. Environments, `$vau`, the derived `$lambda`,
-encapsulation types and an actor layer are not formalized yet; their nodes on
-the site are marked PLAN.
+concrete vau-x rules. Environments, `$vau` and the derived `$lambda` are formalized in a separate
+model of vau-e (see Status). Encapsulation types, hygiene and an actor layer
+are not formalized; their nodes on the site are marked PLAN.
 
 A web search on 2026-11-09 found no prior Lean, Coq, Isabelle, or Agda
 formalization of vau calculus. We do not claim that none exists.
@@ -67,9 +67,26 @@ form of the lambda map are this project's choices. The site nodes and
 `VAU_AUDIT.md` say where each statement goes beyond, or falls short of, the
 thesis.
 
-Still planned (no Lean): derived `$lambda`, environments and `$vau`,
-`$wrap`/`$unwrap`, environment opacity, encapsulation types, and the actor
-layer.
+- Step 4 (environments): a Lean model of Shutt's vau-e calculus in
+  `Vau/Env/` (namespace `VauE`): symbols, environments, compound
+  operatives, the rules (9.7) and the delta-rules (9.12) for `$vau`,
+  `$wrap`, `$unwrap`, plus this project's rules for `$eval` and `$list*`.
+  Fifth headline:
+
+| theorem | file | statement, in words |
+|---|---|---|
+| `VauE.derived_lambda` | `Vau/Env/Lambda.lean` | with Shutt's definition (4.10) of `$lambda` from `$vau`, `wrap`, `eval` and `list*`, `(($lambda p b) . args)` evaluated in `e` reduces to `b` evaluated in `e` extended with `p` bound to the evaluated arguments |
+
+Also proved there: `lambda_def` (thesis (4.18)), `lambda_expr` ((4.20)-(4.22)),
+`lambda_call` (the caller's environment is ignored), `lambda_static_scope`
+(made in `e1`, called from `e2`, the body runs in `e1`), `lambda_eq_wrap_vau`
+((4.9)), `vau_call` (static and dynamic environment), `unwrap_wrap`, and the
+concrete check `lambda_id_seven`. vau-e environments are unsorted lists with
+first-binding lookup, so lookups agree with Shutt but term equality is weaker.
+Confluence of vau-e is not proved.
+
+Still planned (no Lean): environment opacity and hygiene, encapsulation
+types, and the actor layer.
 
 ## Sorry and axiom count
 
@@ -84,6 +101,15 @@ layer.
 'Vau.conservative_extension' depends on axioms: [propext, Quot.sound]
 'Vau.nontrivial' depends on axioms: [propext, Quot.sound]
 'Vau.run_wrapF_F7' does not depend on any axioms
+'VauE.lambda_def' depends on axioms: [propext]
+'VauE.lambda_expr' depends on axioms: [propext, Quot.sound]
+'VauE.lambda_call' depends on axioms: [propext, Quot.sound]
+'VauE.derived_lambda' depends on axioms: [propext, Quot.sound]
+'VauE.lambda_eq_wrap_vau' depends on axioms: [propext, Quot.sound]
+'VauE.vau_call' depends on axioms: [propext]
+'VauE.unwrap_wrap' depends on axioms: [propext]
+'VauE.lambda_id_seven' depends on axioms: [propext, Quot.sound]
+'VauE.lambda_static_scope' depends on axioms: [propext, Quot.sound]
 ```
 
 No partial results: no theorem uses `sorry`.
